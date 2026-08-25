@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TechFlow ERP — Enterprise IT &amp; Facility Complaint Management</title>
+<meta name="description" content="Next-Gen Enterprise IT, Electronics, Electrical, and Mechanical Complaint Management System for Manufacturing &amp; Industrial Operations."/>
+<!-- Local Offline / CDN Fallback Scripts -->
+<script src="lib/tailwindcss.js" onerror="this.onerror=null;this.src='https://cdn.tailwindcss.com?plugins=forms,container-queries'"></script>
+<script src="lib/chart.umd.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js'"></script>
+<!-- Google Fonts & Material Symbols (Cached for offline after initial load) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'Segoe UI', '-apple-system', 'BlinkMacSystemFont', 'Roboto', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+      },
+      colors: {
+        brand: {
+          50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+          400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+          800: '#1e40af', 900: '#1e3a8a', 950: '#172554'
+        },
+      },
+      borderRadius: {
+        '2xl': '16px',
+        '3xl': '24px',
+      },
+      boxShadow: {
+        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.05), 0 10px 20px -2px rgba(0, 0, 0, 0.02)',
+        'elevated': '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-down': 'slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'scale-in': 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      keyframes: {
+        fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+        slideUp: { from: { opacity: '0', transform: 'translateY(12px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        slideDown: { from: { opacity: '0', transform: 'translateY(-12px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        scaleIn: { from: { opacity: '0', transform: 'scale(0.96)' }, to: { opacity: '1', transform: 'scale(1)' } },
+      }
+    }
+  }
+}
+</script>
+
+<style>
+:root {
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --bg-sidebar: #ffffff;
+  --bg-modal: #ffffff;
+  --bg-input: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #94a3b8;
+  --border-main: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --hover-bg: #f8fafc;
+  --active-bg: #eff6ff;
+  --active-text: #2563eb;
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+html.dark {
+  --bg-app: #0b1120;
+  --bg-surface: #1e293b;
+  --bg-surface-elevated: #334155;
+  --bg-surface-subtle: #172033;
+  --bg-sidebar: #131d31;
+  --bg-modal: #1e293b;
+  --bg-input: #172033;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --border-main: #334155;
+  --border-subtle: #1e293b;
+  --glass-bg: rgba(30, 41, 59, 0.88);
+  --glass-border: rgba(51, 65, 85, 0.8);
+  --hover-bg: #27354f;
+  --active-bg: #1e3a8a33;
+  --active-text: #60a5fa;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Material Symbols fallback */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-subtle); border-radius: 9999px; opacity: 0.5; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
+.erp-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.erp-card:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 270px;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar.collapsed {
+  width: 76px;
+}
+.sidebar.collapsed .sidebar-text,
+.sidebar.collapsed .sidebar-section-title,
+.sidebar.collapsed .sidebar-badge {
+  display: none !important;
+}
+.sidebar.collapsed .sidebar-logo-text {
+  display: none !important;
+}
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+  padding: 10px 0;
+  margin: 4px 10px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  margin: 2px 10px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  user-select: none;
+  text-decoration: none;
+}
+.sidebar-link:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+.sidebar-link.active {
+  background: var(--active-bg);
+  color: var(--active-text);
+  font-weight: 600;
+}
+.sidebar-link.active .material-symbols-outlined {
+  color: #2563eb;
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Data Tables */
+.erp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+.erp-table thead th {
+  background: var(--bg-surface-subtle);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-main);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.erp-table tbody td {
+  padding: 13px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+.erp-table tbody tr {
+  transition: background-color 0.12s ease;
+}
+.erp-table tbody tr:hover {
+  background: var(--hover-bg);
+}
+
+/* Status Chips & Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.status-active { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.status-resolved { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+.status-critical { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+html.dark .status-active { background: #14532d44; color: #86efac; border-color: #14532d; }
+html.dark .status-resolved { background: #33415566; color: #cbd5e1; border-color: #475569; }
+html.dark .status-pending { background: #43140744; color: #fdba74; border-color: #431407; }
+html.dark .status-critical { background: #450a0a44; color: #fca5a5; border-color: #450a0a; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  outline: none;
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.2);
+}
+.btn-primary:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px 0 rgba(37, 99, 235, 0.35);
+}
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-main);
+}
+.btn-secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--text-subtle);
+}
+.btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 12px 0 rgba(239, 68, 68, 0.35);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost:hover {
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.show { display: flex; }
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-window {
+  position: relative;
+  width: 100%;
+  max-width: 660px;
+  max-height: 92vh;
+  background: var(--bg-modal);
+  border-radius: 18px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-main);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Form inputs */
+.erp-input, .erp-select, .erp-textarea {
+  width: 100%;
+  padding: 9px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.15s ease;
+}
+.erp-input:focus, .erp-select:focus, .erp-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Print Optimization */
+@media print {
+  body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
+  .no-print, .sidebar, .top-nav, #toast-container, .modal-overlay { display: none !important; }
+  .main-content { margin-left: 0 !important; height: auto !important; overflow: visible !important; }
+  #page-content { padding: 0 !important; overflow: visible !important; }
+  .erp-card { box-shadow: none !important; border: 1px solid #ccc !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================================================== -->
+<!-- 1. LOGIN SCREEN -->
+<!-- ======================================================== -->
+<div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+  <!-- Decorative background ambient lights -->
+  <div class="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none -top-20 -left-20"></div>
+  <div class="absolute w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none -bottom-20 -right-20"></div>
+
+  <div class="relative w-full max-w-md p-8 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-white/20 dark:border-slate-700/50 shadow-2xl animate-scale-in">
+    <!-- Header / Brand -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-700 to-blue-500 text-white shadow-lg shadow-blue-500/30 mb-4">
+        <span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+      </div>
+      <h1 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">TechFlow ERP</h1>
+      <p class="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mt-1">Enterprise IT &amp; Facility Operations</p>
+    </div>
+
+    <!-- Error message alert -->
+    <div id="login-error" class="hidden mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-xs font-medium text-red-600 dark:text-red-400 text-center"></div>
+
+    <!-- Login Form -->
+    <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5" for="login-user">Username</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
+          <input type="text" id="login-user" class="erp-input pl-10" placeholder="e.g. admin, it_dept, emp001" required autocomplete="username"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5" for="login-pass">Password</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+          <input type="password" id="login-pass" class="erp-input pl-10" placeholder="••••••••" required autocomplete="current-password"/>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-full py-3 text-sm font-bold shadow-lg shadow-blue-600/25 mt-2">
+        <span class="material-symbols-outlined text-lg">login</span> Sign In to System
+      </button>
+    </form>
+
+    <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 text-center">
+      <div class="flex items-center justify-center gap-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+        <span class="material-symbols-outlined text-sm">lock</span>
+        <span>Authorized Plant Personnel Only &bull; Internal ERP</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- 2. MAIN APPLICATION SHELL -->
+<!-- ======================================================== -->
+<div id="app-shell" class="hidden h-screen overflow-hidden flex flex-col">
+
+  <div class="flex flex-1 h-full overflow-hidden">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside id="sidebar" class="sidebar fixed md:relative h-screen bg-[var(--bg-sidebar)] border-r border-[var(--border-main)] flex flex-col z-50 overflow-hidden shadow-lg md:shadow-none">
+      
+      <!-- Brand Header -->
+      <div class="flex items-center gap-3 px-5 py-4 border-b border-[var(--border-subtle)] min-h-[64px]">
+        <div class="w-10 h-10 min-w-[40px] rounded-xl bg-gradient-to-tr from-blue-700 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/25">
+          <span class="material-symbols-outlined text-2xl">precision_manufacturing</span>
+        </div>
+        <div class="sidebar-logo-text overflow-hidden">
+          <div class="text-base font-black text-blue-600 dark:text-blue-400 tracking-tight leading-tight">TechFlow ERP</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--text-subtle)]">Plant Operations</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tree -->
+      <nav class="flex-1 overflow-y-auto py-3 space-y-1">
+        
+        <div class="sidebar-section-title px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-subtle)]">Overview</div>
+        <a class="sidebar-link" data-page="dashboard" onclick="navigate('dashboard')">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="sidebar-text">Dashboard</span>
+        </a>
+        <a class="sidebar-link" data-page="complaints" onclick="navigate('complaints')">
+          <span class="material-symbols-outlined">confirmation_number</span>
+          <span class="sidebar-text">Complaint Management</span>
+          <span id="sidebar-active-badge" class="sidebar-badge ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">0</span>
+        </a>
+        <a class="sidebar-link" data-page="employees" onclick="navigate('employees')">
+          <span class="material-symbols-outlined">group</span>
+          <span class="sidebar-text">Employees</span>
+        </a>
+
+        <div class="sidebar-section-title px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-subtle)]">Departments</div>
+        <a class="sidebar-link" data-page="it-department" onclick="navigate('it-department')">
+          <span class="material-symbols-outlined text-blue-500">router</span>
+          <span class="sidebar-text">IT Department</span>
+        </a>
+        <a class="sidebar-link" data-page="electronics-department" onclick="navigate('electronics-department')">
+          <span class="material-symbols-outlined text-purple-500">memory</span>
+          <span class="sidebar-text">Electronics Dept</span>
+        </a>
+        <a class="sidebar-link" data-page="electrical-department" onclick="navigate('electrical-department')">
+          <span class="material-symbols-outlined text-amber-500">bolt</span>
+          <span class="sidebar-text">Electrical Dept</span>
+        </a>
+        <a class="sidebar-link" data-page="mechanical-department" onclick="navigate('mechanical-department')">
+          <span class="material-symbols-outlined text-emerald-500">settings_suggest</span>
+          <span class="sidebar-text">Mechanical Dept</span>
+        </a>
+
+        <div class="sidebar-section-title px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-subtle)]">Analytics &amp; System</div>
+        <a class="sidebar-link" data-page="reports" onclick="navigate('reports')">
+          <span class="material-symbols-outlined">assessment</span>
+          <span class="sidebar-text">Reports &amp; Analytics</span>
+        </a>
+        <a class="sidebar-link" data-page="notifications" onclick="navigate('notifications')">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sidebar-text">Notifications</span>
+          <span id="sidebar-notif-dot" class="sidebar-badge ml-auto w-2 h-2 rounded-full bg-red-500 hidden"></span>
+        </a>
+      </nav>
+
+      <!-- Bottom System Controls -->
+      <div class="border-t border-[var(--border-subtle)] py-2">
+        <a class="sidebar-link" data-page="settings" onclick="navigate('settings')">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="sidebar-text">Settings</span>
+        </a>
+        <a class="sidebar-link text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30" onclick="handleLogout()">
+          <span class="material-symbols-outlined">logout</span>
+          <span class="sidebar-text">Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEW AREA -->
+    <div class="main-content flex-1 flex flex-col h-screen overflow-hidden">
+      
+      <!-- TOP NAVBAR -->
+      <header class="top-nav h-16 glass-panel border-b border-[var(--border-main)] flex items-center justify-between px-6 shrink-0 z-40">
+        
+        <!-- Left: Hamburger + Global Search -->
+        <div class="flex items-center gap-4">
+          <button onclick="toggleSidebar()" class="p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--hover-bg)] transition-colors" title="Toggle Sidebar">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          
+          <div class="relative w-64 md:w-80 hidden sm:block">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-subtle)] text-lg">search</span>
+            <input type="text" id="global-search" class="erp-input pl-9 h-9 text-xs rounded-xl" placeholder="Search CMP ID, staff, issues..." oninput="handleGlobalSearch(this.value)"/>
+          </div>
+        </div>
+
+        <!-- Right: Actions, Live Clock, Theme, Profile -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Live Date & Clock -->
+          <div id="live-clock" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-main)] text-xs font-semibold text-[var(--text-muted)]">
+            <span class="material-symbols-outlined text-sm text-blue-500">schedule</span>
+            <span id="live-clock-text">--:--</span>
+          </div>
+
+          <!-- Send Complaint Top Button -->
+          <button onclick="openSendComplaint()" class="btn btn-primary h-9 text-xs shadow-sm">
+            <span class="material-symbols-outlined text-base">add</span>
+            <span class="hidden sm:inline">Send Complaint</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--hover-bg)] border border-[var(--border-main)] transition-colors" title="Toggle Dark/Light Mode">
+            <span class="material-symbols-outlined text-lg" id="theme-icon">dark_mode</span>
+          </button>
+
+          <!-- Notifications Bell Dropdown -->
+          <div class="relative">
+            <button onclick="toggleNotifDropdown()" class="relative w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--hover-bg)] border border-[var(--border-main)] transition-colors" title="Notifications">
+              <span class="material-symbols-outlined text-lg">notifications</span>
+              <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-black hidden items-center justify-center">0</span>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="notif-dropdown" class="hidden absolute right-0 top-11 w-80 max-h-96 overflow-y-auto bg-[var(--bg-surface)] border border-[var(--border-main)] rounded-2xl shadow-2xl z-50 animate-slide-down">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="h-6 w-px bg-[var(--border-main)] hidden sm:block"></div>
+
+          <!-- User Profile Chip -->
+          <div class="flex items-center gap-2.5 pl-1">
+            <div id="user-avatar" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+              AD
+            </div>
+            <div class="hidden sm:block text-left">
+              <div id="user-name-display" class="text-xs font-bold leading-tight">Admin User</div>
+              <div id="user-role-display" class="text-[10px] font-medium text-[var(--text-subtle)] capitalize">Administrator</div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- SCROLLABLE PAGE CANVAS -->
+      <main id="page-content" class="flex-1 overflow-y-auto p-6 bg-[var(--bg-app)]">
+        <!-- Rendered dynamically -->
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Mobile Overlay for Sidebar -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+</div>
+
+<!-- ======================================================== -->
+<!-- 3. MODALS -->
+<!-- ======================================================== -->
+
+<!-- SEND COMPLAINT MODAL -->
+<div id="modal-send-complaint" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeModal('modal-send-complaint')"></div>
+  <div class="modal-window max-w-xl">
+    
+    <div class="px-6 py-4 border-b border-[var(--border-main)] flex justify-between items-center bg-[var(--bg-surface-subtle)]">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-blue-600 text-2xl">add_circle</span>
+        <h3 class="text-base font-bold text-[var(--text-main)]">Submit New Complaint</h3>
+      </div>
+      <button onclick="closeModal('modal-send-complaint')" class="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--hover-bg)]">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <form onsubmit="event.preventDefault(); submitComplaint();" class="p-6 overflow-y-auto flex-1 space-y-4">
+      
+      <!-- Auto-filled user information card -->
+      <div class="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-main)] text-xs">
+        <div>
+          <span class="text-[var(--text-subtle)] font-bold uppercase tracking-wider block text-[10px]">Employee Code</span>
+          <span id="modal-emp-code" class="font-mono font-bold text-blue-600 dark:text-blue-400">EMP-001</span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] font-bold uppercase tracking-wider block text-[10px]">Employee Name</span>
+          <span id="modal-emp-name" class="font-bold text-[var(--text-main)]">Rajesh Kumar</span>
+        </div>
+        <div class="col-span-2">
+          <span class="text-[var(--text-subtle)] font-bold uppercase tracking-wider block text-[10px]">Sender Department</span>
+          <span id="modal-emp-dept" class="font-semibold text-[var(--text-muted)]">Operations / Plant</span>
+        </div>
+      </div>
+
+      <!-- Target Department & Category -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="complaint-department">
+            Target Department <span class="text-red-500">*</span>
+          </label>
+          <select id="complaint-department" class="erp-select text-xs font-medium" required onchange="updateCategoriesForDept(this.value)">
+            <option value="">Select department...</option>
+            <option value="IT">💻 IT Department</option>
+            <option value="Electronics">⚡ Electronics Department</option>
+            <option value="Electrical">🔌 Electrical Department</option>
+            <option value="Mechanical">⚙️ Mechanical Department</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="complaint-category">
+            Complaint Category <span class="text-red-500">*</span>
+          </label>
+          <select id="complaint-category" class="erp-select text-xs font-medium" required>
+            <option value="">Select category...</option>
+            <option value="Network Issue">Network &amp; Connectivity</option>
+            <option value="Hardware Repair">Hardware / Workstation</option>
+            <option value="Software Access">ERP / Software Access</option>
+            <option value="Server Issue">Server / Cloud Downtime</option>
+            <option value="Printer Issue">Printer / Peripheral</option>
+            <option value="Electronic Malfunction">PLC / Sensor Malfunction</option>
+            <option value="Electrical Fault">Power Surge / Wiring Fault</option>
+            <option value="Mechanical Failure">Machinery / Bearing Failure</option>
+            <option value="Other">Other Operational Issue</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Priority -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="complaint-priority">
+          Priority Level <span class="text-red-500">*</span>
+        </label>
+        <div class="grid grid-cols-4 gap-2">
+          <label class="flex items-center justify-center p-2 rounded-xl border border-[var(--border-main)] text-xs font-semibold cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 has-[:checked]:text-blue-600 dark:has-[:checked]:bg-blue-950/40">
+            <input type="radio" name="priority-radio" value="Low" class="hidden"/> Low
+          </label>
+          <label class="flex items-center justify-center p-2 rounded-xl border border-[var(--border-main)] text-xs font-semibold cursor-pointer has-[:checked]:bg-orange-50 has-[:checked]:border-orange-500 has-[:checked]:text-orange-600 dark:has-[:checked]:bg-orange-950/40">
+            <input type="radio" name="priority-radio" value="Medium" checked class="hidden"/> Medium
+          </label>
+          <label class="flex items-center justify-center p-2 rounded-xl border border-[var(--border-main)] text-xs font-semibold cursor-pointer has-[:checked]:bg-red-50 has-[:checked]:border-red-500 has-[:checked]:text-red-600 dark:has-[:checked]:bg-red-950/40">
+            <input type="radio" name="priority-radio" value="High" class="hidden"/> High
+          </label>
+          <label class="flex items-center justify-center p-2 rounded-xl border border-[var(--border-main)] text-xs font-bold cursor-pointer has-[:checked]:bg-red-600 has-[:checked]:border-red-600 has-[:checked]:text-white">
+            <input type="radio" name="priority-radio" value="Critical" class="hidden"/> 🚨 Critical
+          </label>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="complaint-desc">
+          Complaint Description <span class="text-red-500">*</span>
+        </label>
+        <textarea id="complaint-desc" rows="4" class="erp-textarea text-xs" placeholder="Detail the issue, machine number, error codes, and business impact..." required></textarea>
+      </div>
+
+      <!-- Attachment Dropzone -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1">Attachment (Optional)</label>
+        <div id="file-drop-zone" onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-[var(--border-main)] hover:border-blue-500 rounded-xl p-4 text-center cursor-pointer bg-[var(--bg-surface-subtle)] transition-colors">
+          <span class="material-symbols-outlined text-2xl text-[var(--text-subtle)]">cloud_upload</span>
+          <p class="text-xs font-medium text-[var(--text-muted)] mt-1">Click to attach screenshot, error log or PDF</p>
+          <p class="text-[10px] text-[var(--text-subtle)]">PNG, JPG, PDF up to 5MB</p>
+          <input type="file" id="file-input" class="hidden" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx" onchange="handleFileSelect(this)"/>
+        </div>
+        <div id="file-name-display" class="hidden mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300 items-center justify-between">
+          <span class="flex items-center gap-1 font-mono text-xs"><span class="material-symbols-outlined text-sm">attachment</span> <span id="selected-file-name"></span></span>
+          <button type="button" onclick="clearFile()" class="text-red-500 hover:text-red-700"><span class="material-symbols-outlined text-sm">close</span></button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="pt-3 border-t border-[var(--border-main)] flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-send-complaint')" class="btn btn-secondary text-xs">Cancel</button>
+        <button type="submit" class="btn btn-primary text-xs shadow-md">
+          <span class="material-symbols-outlined text-base">send</span> Submit Complaint
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- VIEW COMPLAINT MODAL -->
+<div id="modal-view-complaint" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeModal('modal-view-complaint')"></div>
+  <div class="modal-window max-w-2xl" id="view-complaint-body">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- RESOLVE COMPLAINT MODAL -->
+<div id="modal-resolve-complaint" class="modal-overlay">
+  <div class="modal-backdrop" onclick="closeModal('modal-resolve-complaint')"></div>
+  <div class="modal-window max-w-lg">
+    
+    <div class="px-6 py-4 border-b border-[var(--border-main)] flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/40">
+      <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+        <span class="material-symbols-outlined text-2xl">task_alt</span>
+        <h3 class="text-base font-bold">Resolve Complaint</h3>
+      </div>
+      <button onclick="closeModal('modal-resolve-complaint')" class="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--hover-bg)]">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <form onsubmit="event.preventDefault(); resolveComplaint();" class="p-6 space-y-4">
+      
+      <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-main)] text-xs space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-mono font-bold text-sm text-blue-600 dark:text-blue-400" id="resolve-cmp-id">CMP-0000</span>
+          <span id="resolve-priority-badge" class="status-badge status-critical">Critical</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div><span class="text-[var(--text-subtle)]">Employee:</span> <span id="resolve-emp-name" class="font-semibold">--</span></div>
+          <div><span class="text-[var(--text-subtle)]">Department:</span> <span id="resolve-dept" class="font-semibold">--</span></div>
+        </div>
+        <div class="text-xs text-[var(--text-muted)] pt-1 border-t border-[var(--border-subtle)]" id="resolve-desc">
+          --
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="resolve-est-time">
+          Estimated / Actual Resolution Time <span class="text-red-500">*</span>
+        </label>
+        <input type="text" id="resolve-est-time" class="erp-input text-xs" placeholder="e.g. 1.5 Hours, Same Day, 45 mins" required/>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1" for="resolve-remarks">
+          Resolution Remarks / Root Cause Fixed <span class="text-red-500">*</span>
+        </label>
+        <textarea id="resolve-remarks" rows="3" class="erp-textarea text-xs" placeholder="Describe diagnosis, parts replaced, software patches, or configuration changes..." required></textarea>
+      </div>
+
+      <input type="hidden" id="resolve-complaint-id-hidden"/>
+
+      <div class="pt-3 border-t border-[var(--border-main)] flex justify-end gap-2">
+        <button type="button" onclick="closeModal('modal-resolve-complaint')" class="btn btn-secondary text-xs">Cancel</button>
+        <button type="submit" class="btn text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20">
+          <span class="material-symbols-outlined text-base">check_circle</span> Mark as Resolved &amp; Lock
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- FLOATING TOAST CONTAINER -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- ======================================================== -->
+<!-- 4. CORE ERP LOGIC & PERSISTENCE (JavaScript) -->
+<!-- ======================================================== -->
+<script>
+// ---------- DATABASE KEYS & CONSTANTS ----------
+const DB_KEYS = {
+  users: 'tf_erp_users',
+  complaints: 'tf_erp_complaints',
+  notifications: 'tf_erp_notifications',
+  activity: 'tf_erp_activity',
+  theme: 'tf_erp_theme',
+  session: 'tf_erp_session'
+};
+
+const DEPARTMENTS = ['IT', 'Electronics', 'Electrical', 'Mechanical'];
+const DEPT_ICONS = { IT: 'router', Electronics: 'memory', Electrical: 'bolt', Mechanical: 'settings_suggest' };
+const DEPT_COLORS = { IT: '#2563eb', Electronics: '#9333ea', Electrical: '#d97706', Mechanical: '#059669' };
+
+function dbGet(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || null; } catch(e) { return null; }
+}
+function dbSet(key, val) {
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+    // Trigger real-time server disk & Excel CSV sync
+    syncWithBackend();
+  } catch(e) { console.error('LocalStorage write error', e); }
+}
+
+// Real-time server Excel & JSON disk synchronization
+async function syncWithBackend() {
+  try {
+    const payload = {
+      complaints: dbGet(DB_KEYS.complaints) || [],
+      users: dbGet(DB_KEYS.users) || [],
+      notifications: dbGet(DB_KEYS.notifications) || [],
+      activity: dbGet(DB_KEYS.activity) || [],
+      lastUpdated: new Date().toISOString()
+    };
+    await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    // Running in offline browser mode without server.js, localStorage handles persistence
+  }
+}
+
+async function loadFromServerBackend() {
+  try {
+    const res = await fetch('/api/data');
+    if (res.ok) {
+      const serverData = await res.json();
+      if (serverData && Array.isArray(serverData.complaints)) {
+        localStorage.setItem(DB_KEYS.complaints, JSON.stringify(serverData.complaints));
+        if (serverData.notifications) localStorage.setItem(DB_KEYS.notifications, JSON.stringify(serverData.notifications));
+        if (serverData.activity) localStorage.setItem(DB_KEYS.activity, JSON.stringify(serverData.activity));
+      }
+    }
+  } catch(e) {
+    // Offline or standalone file mode
+  }
+}
+
+// ---------- DATABASE SEEDING (0 DEMO COMPLAINTS - CLEAN PRODUCTION) ----------
+function seedDatabase() {
+  const users = [
+    { id: 'U001', code: 'EMP-100', username: 'admin', password: 'admin123', name: 'System Administrator', email: 'admin@plant.corp', role: 'admin', department: 'Executive IT', avatar: 'SA' },
+    { id: 'U002', code: 'EMP-102', username: 'it_dept', password: 'it123', name: 'IT Department Head', email: 'it.dept@plant.corp', role: 'department', department: 'IT', avatar: 'IT' },
+    { id: 'U003', code: 'EMP-103', username: 'elec_dept', password: 'elec123', name: 'Electronics Dept Head', email: 'electronics.dept@plant.corp', role: 'department', department: 'Electronics', avatar: 'EL' },
+    { id: 'U004', code: 'EMP-104', username: 'electrical_dept', password: 'elec456', name: 'Electrical Dept Head', email: 'electrical.dept@plant.corp', role: 'department', department: 'Electrical', avatar: 'ED' },
+    { id: 'U005', code: 'EMP-105', username: 'mech_dept', password: 'mech123', name: 'Mechanical Dept Head', email: 'mechanical.dept@plant.corp', role: 'department', department: 'Mechanical', avatar: 'MD' },
+    { id: 'U006', code: 'EMP-201', username: 'emp001', password: 'emp123', name: 'Plant Operator', email: 'operator01@plant.corp', role: 'employee', department: 'Production Floor', avatar: 'PO' },
+  ];
+
+  // Completely clean industrial database - 0 demo complaints
+  if (!dbGet(DB_KEYS.users)) dbSet(DB_KEYS.users, users);
+  if (!dbGet(DB_KEYS.complaints)) dbSet(DB_KEYS.complaints, []);
+  if (!dbGet(DB_KEYS.notifications)) dbSet(DB_KEYS.notifications, []);
+  if (!dbGet(DB_KEYS.activity)) dbSet(DB_KEYS.activity, []);
+}
+
+function getUsers() { return dbGet(DB_KEYS.users) || []; }
+function getComplaints() { return dbGet(DB_KEYS.complaints) || []; }
+function getNotifications() { return dbGet(DB_KEYS.notifications) || []; }
+function getActivity() { return dbGet(DB_KEYS.activity) || []; }
+
+function getNextComplaintId() {
+  const list = getComplaints();
+  if (!list.length) return 'CMP-0001';
+  const nums = list.map(c => parseInt(c.id.replace('CMP-', '')) || 0);
+  const max = Math.max(...nums, 0);
+  return 'CMP-' + String(max + 1).padStart(4, '0');
+}
+
+// ---------- AUTHENTICATION & SESSION ----------
+let currentUser = null;
+
+function handleLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  const errEl = document.getElementById('login-error');
+
+  if (!u || !p) {
+    errEl.textContent = 'Please enter both username and password.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
+
+  if (!user) {
+    errEl.textContent = 'Invalid credentials. Please verify username and password.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  currentUser = user;
+  dbSet(DB_KEYS.session, user);
+  errEl.classList.add('hidden');
+  launchAppShell();
+}
+
+function handleLogout() {
+  currentUser = null;
+  localStorage.removeItem(DB_KEYS.session);
+  document.getElementById('app-shell').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+function launchAppShell() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-shell').classList.remove('hidden');
+
+  // Fill Navbar user details
+  document.getElementById('user-avatar').textContent = currentUser.avatar || currentUser.name.split(' ').map(w=>w[0]).join('');
+  document.getElementById('user-name-display').textContent = currentUser.name;
+  
+  let roleTitle = currentUser.role;
+  if (currentUser.role === 'department') roleTitle = currentUser.department + ' Head';
+  if (currentUser.role === 'admin') roleTitle = 'System Administrator';
+  if (currentUser.role === 'employee') roleTitle = 'Plant Staff (' + currentUser.department + ')';
+  document.getElementById('user-role-display').textContent = roleTitle;
+
+  // Apply Sidebar Permissions
+  applySidebarAccessControl();
+  updateNotifBadge();
+  updateSidebarCounts();
+
+  // Navigate to default or current hash
+  const initialHash = location.hash.slice(1) || 'dashboard';
+  navigate(initialHash);
+}
+
+function applySidebarAccessControl() {
+  const links = document.querySelectorAll('.sidebar-link[data-page]');
+  links.forEach(link => {
+    const page = link.dataset.page;
+    link.style.display = '';
+
+    if (currentUser.role === 'employee') {
+      // Employees cannot manage other departments directly or view HR Employee list
+      if (['employees', 'reports', 'it-department', 'electronics-department', 'electrical-department', 'mechanical-department'].includes(page)) {
+        link.style.display = 'none';
+      }
+    } else if (currentUser.role === 'department') {
+      // Department Heads only see their own department page
+      const deptMap = {
+        'it-department': 'IT',
+        'electronics-department': 'Electronics',
+        'electrical-department': 'Electrical',
+        'mechanical-department': 'Mechanical'
+      };
+      if (deptMap[page] && deptMap[page] !== currentUser.department) {
+        link.style.display = 'none';
+      }
+      if (page === 'employees') link.style.display = 'none';
+    }
+  });
+}
+
+function updateSidebarCounts() {
+  const complaints = getComplaints();
+  let myComplaints = complaints;
+  if (currentUser.role === 'employee') {
+    myComplaints = complaints.filter(c => c.employeeId === currentUser.id);
+  } else if (currentUser.role === 'department') {
+    myComplaints = complaints.filter(c => c.department === currentUser.department);
+  }
+  const activeCount = myComplaints.filter(c => c.status === 'Active').length;
+  const badge = document.getElementById('sidebar-active-badge');
+  if (badge) badge.textContent = activeCount;
+}
+
+// ---------- ROUTING SYSTEM ----------
+function navigate(page) {
+  if (!currentUser) {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app-shell').classList.add('hidden');
+    return;
+  }
+
+  if (!page) page = 'dashboard';
+  location.hash = page;
+
+  // Highlight active link
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  const active = document.querySelector(`.sidebar-link[data-page="${page}"]`);
+  if (active) active.classList.add('active');
+
+  // Close mobile sidebar if open
+  if (window.innerWidth < 768) {
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebar-overlay').classList.add('hidden');
+  }
+
+  renderView(page);
+}
+
+window.addEventListener('hashchange', () => {
+  if (currentUser) renderView(location.hash.slice(1) || 'dashboard');
+});
+
+// ---------- CHART DESTROYER & TRACKER ----------
+let activeCharts = [];
+function cleanupCharts() {
+  activeCharts.forEach(c => { try { c.destroy(); } catch(e){} });
+  activeCharts = [];
+}
+
+// ---------- PAGE RENDERERS ----------
+function renderView(page) {
+  const main = document.getElementById('page-content');
+  cleanupCharts();
+
+  switch(page) {
+    case 'dashboard':
+      if (currentUser.role === 'employee') renderEmployeeDashboard(main);
+      else renderCorporateDashboard(main);
+      break;
+    case 'complaints':
+      renderComplaintManagement(main);
+      break;
+    case 'employees':
+      renderEmployeeDirectory(main);
+      break;
+    case 'it-department':
+      renderDepartmentWorkspace(main, 'IT');
+      break;
+    case 'electronics-department':
+      renderDepartmentWorkspace(main, 'Electronics');
+      break;
+    case 'electrical-department':
+      renderDepartmentWorkspace(main, 'Electrical');
+      break;
+    case 'mechanical-department':
+      renderDepartmentWorkspace(main, 'Mechanical');
+      break;
+    case 'reports':
+      renderReportsAnalytics(main);
+      break;
+    case 'notifications':
+      renderNotificationsCenter(main);
+      break;
+    case 'settings':
+      renderSystemSettings(main);
+      break;
+    default:
+      renderCorporateDashboard(main);
+  }
+}
+
+// ---------- 1. CORPORATE DASHBOARD (Admin & Dept Heads) ----------
+function renderCorporateDashboard(container) {
+  let complaints = getComplaints();
+  if (currentUser.role === 'department') {
+    complaints = complaints.filter(c => c.department === currentUser.department);
+  }
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const total = complaints.length;
+  const active = complaints.filter(c => c.status === 'Active').length;
+  const resolved = complaints.filter(c => c.status === 'Resolved').length;
+  const today = complaints.filter(c => c.createdDate === todayStr).length;
+
+  const deptCounts = { IT: { active: 0, resolved: 0 }, Electronics: { active: 0, resolved: 0 }, Electrical: { active: 0, resolved: 0 }, Mechanical: { active: 0, resolved: 0 } };
+  getComplaints().forEach(c => {
+    if (deptCounts[c.department]) {
+      if (c.status === 'Active') deptCounts[c.department].active++;
+      else deptCounts[c.department].resolved++;
+    }
+  });
+
+  const recentList = [...complaints].sort((a,b) => (b.createdDate+b.createdTime).localeCompare(a.createdDate+a.createdTime)).slice(0, 5);
+  const activities = getActivity().sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 6);
+
+  container.innerHTML = `
+    <div class="space-y-6 animate-fade-in">
+      
+      <!-- Page Title & Quick Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)]">
+            ${currentUser.role === 'admin' ? 'Enterprise Operations Dashboard' : currentUser.department + ' Department Overview'}
+          </h1>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Real-time complaint telemetry, MTTR analytics, and active maintenance queue.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openSendComplaint()" class="btn btn-primary text-xs shadow-md">
+            <span class="material-symbols-outlined text-base">add</span> Send Complaint
+          </button>
+          <button onclick="exportCSV()" class="btn btn-secondary text-xs" title="Export CSV Data">
+            <span class="material-symbols-outlined text-base">download</span> Export
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Metrics Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Complaints -->
+        <div class="erp-card p-5 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Total Complaints</span>
+            <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">confirmation_number</span>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-[var(--text-main)] mt-3">${total}</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
+            <span class="text-blue-600 font-bold">100%</span> Cumulative tickets
+          </div>
+        </div>
+
+        <!-- Active Complaints -->
+        <div class="erp-card p-5 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Active Complaints</span>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">pending_actions</span>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-3">${active}</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
+            <span class="text-emerald-600 font-bold">${total ? Math.round((active/total)*100) : 0}%</span> of total workload
+          </div>
+        </div>
+
+        <!-- Resolved Complaints -->
+        <div class="erp-card p-5 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Resolved Issues</span>
+            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">task_alt</span>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-[var(--text-muted)] mt-3">${resolved}</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
+            <span class="text-slate-600 font-bold">${total ? Math.round((resolved/total)*100) : 0}%</span> Resolution rate
+          </div>
+        </div>
+
+        <!-- Today's Complaints -->
+        <div class="erp-card p-5 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Today's Inflow</span>
+            <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">today</span>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mt-3">${today}</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-1">Logged today (${todayStr})</div>
+        </div>
+
+      </div>
+
+      <!-- Charts Section (2 Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Status Donut Chart -->
+        <div class="erp-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-600 text-lg">donut_large</span>
+              <h3 class="text-sm font-bold text-[var(--text-main)]">Complaint Status Distribution</h3>
+            </div>
+            <span class="text-[11px] text-[var(--text-subtle)] font-medium">Live Telemetry</span>
+          </div>
+          <div class="h-60 relative flex items-center justify-center">
+            <canvas id="chart-status-donut"></canvas>
+          </div>
+        </div>
+
+        <!-- Department-wise Bar Chart -->
+        <div class="erp-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-600 text-lg">bar_chart</span>
+              <h3 class="text-sm font-bold text-[var(--text-main)]">Department Workload Distribution</h3>
+            </div>
+            <span class="text-[11px] text-[var(--text-subtle)] font-medium">Active vs Resolved</span>
+          </div>
+          <div class="h-60 relative">
+            <canvas id="chart-dept-bar"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Split: Recent Complaints Table + Activity Timeline -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Recent Complaints (2 cols) -->
+        <div class="erp-card overflow-hidden lg:col-span-2 flex flex-col">
+          <div class="p-4 border-b border-[var(--border-main)] flex items-center justify-between bg-[var(--bg-surface-subtle)]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-600 text-lg">format_list_bulleted</span>
+              <h3 class="text-sm font-bold text-[var(--text-main)]">Recent Maintenance Tickets</h3>
+            </div>
+            <button onclick="navigate('complaints')" class="text-xs font-bold text-blue-600 hover:underline">View All Queue &rarr;</button>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="erp-table">
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Department</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentList.length ? recentList.map(c => `
+                  <tr class="cursor-pointer" onclick="showViewModal('${c.id}')">
+                    <td class="font-mono font-bold text-blue-600 dark:text-blue-400">${c.id}</td>
+                    <td>
+                      <span class="inline-flex items-center gap-1 font-semibold text-xs">
+                        <span class="material-symbols-outlined text-sm" style="color: ${DEPT_COLORS[c.department]}">${DEPT_ICONS[c.department]}</span>
+                        ${c.department}
+                      </span>
+                    </td>
+                    <td class="text-xs text-[var(--text-muted)]">${c.category}</td>
+                    <td>
+                      <span class="status-badge ${c.priority === 'Critical' ? 'status-critical' : c.priority === 'High' ? 'status-pending' : 'status-resolved'}">
+                        ${c.priority}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="status-badge ${c.status === 'Active' ? 'status-active' : 'status-resolved'}">
+                        ${c.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button onclick="event.stopPropagation(); showViewModal('${c.id}')" class="btn btn-ghost p-1 h-7 w-7 rounded-lg text-blue-600" title="View details">
+                        <span class="material-symbols-outlined text-base">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                `).join('') : `<tr><td colspan="6" class="text-center py-8 text-xs text-[var(--text-subtle)]">No recent tickets logged</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity Timeline (1 col) -->
+        <div class="erp-card p-5 flex flex-col">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-blue-600 text-lg">history</span>
+            <h3 class="text-sm font-bold text-[var(--text-main)]">Operational Audit Log</h3>
+          </div>
+
+          <div class="space-y-4 overflow-y-auto max-h-[320px] pr-1 flex-1">
+            ${activities.map(a => {
+              const isResolved = a.action.includes('Resolved');
+              const icon = isResolved ? 'check_circle' : 'bolt';
+              const iconColor = isResolved ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50' : 'text-blue-600 bg-blue-50 dark:bg-blue-950/50';
+              return `
+                <div class="flex items-start gap-3 text-xs">
+                  <div class="w-8 h-8 rounded-lg ${iconColor} flex items-center justify-center shrink-0 mt-0.5">
+                    <span class="material-symbols-outlined text-sm">${icon}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold text-[var(--text-main)]">${a.action}</div>
+                    <div class="text-[var(--text-muted)] truncate">${a.complaintId || ''} &bull; ${a.details}</div>
+                    <div class="text-[10px] text-[var(--text-subtle)] mt-0.5">${timeAgo(new Date(a.timestamp))}</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  // Draw Charts
+  setTimeout(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#94a3b8' : '#475569';
+    const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+    // 1. Donut
+    const ctx1 = document.getElementById('chart-status-donut');
+    if (ctx1) {
+      const c1 = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Active In-Progress', 'Resolved & Verified'],
+          datasets: [{
+            data: [active, resolved],
+            backgroundColor: ['#22c55e', '#94a3b8'],
+            borderWidth: 0,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: textColor, font: { size: 11, family: 'Inter', weight: '600' }, padding: 16 }
+            }
+          }
+        }
+      });
+      activeCharts.push(c1);
+    }
+
+    // 2. Bar
+    const ctx2 = document.getElementById('chart-dept-bar');
+    if (ctx2) {
+      const c2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: DEPARTMENTS,
+          datasets: [
+            {
+              label: 'Active Tickets',
+              data: DEPARTMENTS.map(d => deptCounts[d].active),
+              backgroundColor: '#2563eb',
+              borderRadius: 6,
+              barPercentage: 0.55
+            },
+            {
+              label: 'Resolved Tickets',
+              data: DEPARTMENTS.map(d => deptCounts[d].resolved),
+              backgroundColor: '#94a3b8',
+              borderRadius: 6,
+              barPercentage: 0.55
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11, family: 'Inter' } } },
+            y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1, font: { size: 11 } } }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: textColor, font: { size: 11, family: 'Inter', weight: '600' }, padding: 16 }
+            }
+          }
+        }
+      });
+      activeCharts.push(c2);
+    }
+  }, 100);
+}
+
+// ---------- 2. EMPLOYEE DASHBOARD (Self-Service Portal) ----------
+function renderEmployeeDashboard(container) {
+  const myComplaints = getComplaints().filter(c => c.employeeId === currentUser.id);
+  const activeCount = myComplaints.filter(c => c.status === 'Active').length;
+  const resolvedCount = myComplaints.filter(c => c.status === 'Resolved').length;
+
+  container.innerHTML = `
+    <div class="space-y-6 animate-fade-in">
+      
+      <!-- Welcome Banner -->
+      <div class="erp-card p-6 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl relative overflow-hidden shadow-xl shadow-blue-600/20">
+        <div class="relative z-10 max-w-xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md mb-2">
+            Plant Staff Self-Service Portal
+          </span>
+          <h1 class="text-2xl font-black tracking-tight">Welcome, ${currentUser.name}</h1>
+          <p class="text-xs text-blue-100 mt-1 leading-relaxed">
+            Report machinery breakdowns, IT network glitches, sensor errors or electrical faults immediately to ensure continuous manufacturing uptime.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button onclick="openSendComplaint()" class="btn bg-white text-blue-700 hover:bg-blue-50 text-xs font-bold shadow-lg">
+              <span class="material-symbols-outlined text-base">add_circle</span> Submit New Complaint
+            </button>
+            <button onclick="navigate('complaints')" class="btn bg-blue-800/60 hover:bg-blue-800 text-white border border-white/20 text-xs">
+              <span class="material-symbols-outlined text-base">format_list_bulleted</span> View My History
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="erp-card p-5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">My Total Complaints</div>
+          <div class="text-3xl font-black text-blue-600 dark:text-blue-400 mt-2">${myComplaints.length}</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Submitted by you</p>
+        </div>
+        <div class="erp-card p-5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">In-Progress (Active)</div>
+          <div class="text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-2">${activeCount}</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Being resolved by engineering</p>
+        </div>
+        <div class="erp-card p-5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Resolved &amp; Closed</div>
+          <div class="text-3xl font-black text-slate-600 dark:text-slate-300 mt-2">${resolvedCount}</div>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Completed service tickets</p>
+        </div>
+      </div>
+
+      <!-- My Active Complaints Tracker -->
+      <div class="erp-card overflow-hidden">
+        <div class="p-4 border-b border-[var(--border-main)] flex items-center justify-between bg-[var(--bg-surface-subtle)]">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-lg">track_changes</span>
+            <h3 class="text-sm font-bold text-[var(--text-main)]">My Complaint Status Tracker</h3>
+          </div>
+          <button onclick="openSendComplaint()" class="btn btn-primary h-8 text-xs">
+            <span class="material-symbols-outlined text-sm">add</span> New Ticket
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="erp-table">
+            <thead>
+              <tr>
+                <th>Complaint ID</th>
+                <th>Assigned Department</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Est. Resolution</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${myComplaints.length ? myComplaints.map(c => `
+                <tr class="cursor-pointer" onclick="showViewModal('${c.id}')">
+                  <td class="font-mono font-bold text-blue-600 dark:text-blue-400">${c.id}</td>
+                  <td>
+                    <span class="inline-flex items-center gap-1 font-semibold text-xs">
+                      <span class="material-symbols-outlined text-sm" style="color: ${DEPT_COLORS[c.department]}">${DEPT_ICONS[c.department]}</span>
+                      ${c.department}
+                    </span>
+                  </td>
+                  <td class="text-xs">${c.category}</td>
+                  <td><span class="status-badge ${c.priority === 'Critical' ? 'status-critical' : c.priority === 'High' ? 'status-pending' : 'status-resolved'}">${c.priority}</span></td>
+                  <td><span class="status-badge ${c.status === 'Active' ? 'status-active' : 'status-resolved'}">${c.status}</span></td>
+                  <td class="text-xs text-[var(--text-muted)]">${c.estimatedResolution || 'Pending Review'}</td>
+                  <td>
+                    <button onclick="event.stopPropagation(); showViewModal('${c.id}')" class="btn btn-ghost p-1 h-7 w-7 text-blue-600" title="View details">
+                      <span class="material-symbols-outlined text-base">visibility</span>
+                    </button>
+                  </td>
+                </tr>
+              `).join('') : `<tr><td colspan="7" class="text-center py-10 text-xs text-[var(--text-subtle)]">You have not submitted any complaints yet.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+// ---------- 3. COMPLAINT MANAGEMENT PAGE ----------
+let complaintFilterState = { search: '', dept: '', status: '', priority: '', page: 1, limit: 8 };
+
+function renderComplaintManagement(container, forcedDept = null) {
+  let list = getComplaints();
+
+  // Role Scoping
+  if (forcedDept) {
+    list = list.filter(c => c.department === forcedDept);
+  } else if (currentUser.role === 'employee') {
+    list = list.filter(c => c.employeeId === currentUser.id);
+  } else if (currentUser.role === 'department') {
+    list = list.filter(c => c.department === currentUser.department);
+  }
+
+  // Filter application
+  if (complaintFilterState.search) {
+    const q = complaintFilterState.search.toLowerCase();
+    list = list.filter(c => c.id.toLowerCase().includes(q) || c.employeeName.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
+  }
+  if (complaintFilterState.dept && !forcedDept) {
+    list = list.filter(c => c.department === complaintFilterState.dept);
+  }
+  if (complaintFilterState.status) {
+    list = list.filter(c => c.status === complaintFilterState.status);
+  }
+  if (complaintFilterState.priority) {
+    list = list.filter(c => c.priority === complaintFilterState.priority);
+  }
+
+  // Sort by date/time descending
+  list.sort((a,b) => (b.createdDate+b.createdTime).localeCompare(a.createdDate+a.createdTime));
+
+  const totalItems = list.length;
+  const totalPages = Math.ceil(totalItems / complaintFilterState.limit) || 1;
+  if (complaintFilterState.page > totalPages) complaintFilterState.page = totalPages;
+  const startIdx = (complaintFilterState.page - 1) * complaintFilterState.limit;
+  const pageItems = list.slice(startIdx, startIdx + complaintFilterState.limit);
+
+  const canResolve = currentUser.role === 'admin' || (currentUser.role === 'department' && (!forcedDept || forcedDept === currentUser.department));
+
+  container.innerHTML = `
+    <div class="space-y-5 animate-fade-in">
+      
+      <!-- Top Title Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)] flex items-center gap-2">
+            ${forcedDept ? `<span class="material-symbols-outlined text-2xl" style="color: ${DEPT_COLORS[forcedDept]}">${DEPT_ICONS[forcedDept]}</span>` : ''}
+            ${forcedDept ? forcedDept + ' Department Tickets' : 'Complaint Management Center'}
+          </h1>
+          <p class="text-xs text-[var(--text-muted)] mt-1">
+            ${forcedDept ? `Manage, diagnose, and resolve ${forcedDept.toLowerCase()} operational issues.` : 'Comprehensive enterprise ticket directory across manufacturing lines.'}
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openSendComplaint('${forcedDept || ''}')" class="btn btn-primary text-xs shadow-md">
+            <span class="material-symbols-outlined text-base">add</span> + Send Complaint
+          </button>
+          <label class="btn btn-secondary text-xs cursor-pointer" title="Import Complaints from Excel CSV">
+            <span class="material-symbols-outlined text-base">upload_file</span> Import Excel
+            <input type="file" accept=".csv,.txt" class="hidden" onchange="importExcelCSV(this)"/>
+          </label>
+          <button onclick="exportCSV()" class="btn btn-secondary text-xs" title="Export to Excel CSV">
+            <span class="material-symbols-outlined text-base">download</span> Export Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="erp-card p-4 flex flex-wrap items-center gap-3">
+        <div class="relative flex-1 min-w-[200px]">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-subtle)] text-lg">search</span>
+          <input type="text" class="erp-input pl-9 h-9 text-xs" placeholder="Filter by ticket ID, worker name, keyword..." value="${complaintFilterState.search}" oninput="complaintFilterState.search=this.value; complaintFilterState.page=1; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')"/>
+        </div>
+
+        ${!forcedDept && currentUser.role === 'admin' ? `
+          <select class="erp-select h-9 text-xs w-36" onchange="complaintFilterState.dept=this.value; complaintFilterState.page=1; renderView('complaints')">
+            <option value="">All Departments</option>
+            ${DEPARTMENTS.map(d => `<option value="${d}" ${complaintFilterState.dept===d?'selected':''}>${d}</option>`).join('')}
+          </select>
+        ` : ''}
+
+        <select class="erp-select h-9 text-xs w-32" onchange="complaintFilterState.status=this.value; complaintFilterState.page=1; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')">
+          <option value="">All Status</option>
+          <option value="Active" ${complaintFilterState.status==='Active'?'selected':''}>Active</option>
+          <option value="Resolved" ${complaintFilterState.status==='Resolved'?'selected':''}>Resolved</option>
+        </select>
+
+        <select class="erp-select h-9 text-xs w-32" onchange="complaintFilterState.priority=this.value; complaintFilterState.page=1; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')">
+          <option value="">All Priority</option>
+          <option value="Low" ${complaintFilterState.priority==='Low'?'selected':''}>Low</option>
+          <option value="Medium" ${complaintFilterState.priority==='Medium'?'selected':''}>Medium</option>
+          <option value="High" ${complaintFilterState.priority==='High'?'selected':''}>High</option>
+          <option value="Critical" ${complaintFilterState.priority==='Critical'?'selected':''}>Critical</option>
+        </select>
+
+        <button onclick="complaintFilterState={search:'',dept:'',status:'',priority:'',page:1,limit:8}; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')" class="btn btn-secondary h-9 text-xs">
+          <span class="material-symbols-outlined text-sm">refresh</span> Reset
+        </button>
+      </div>
+
+      <!-- Main Data Table -->
+      <div class="erp-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="erp-table">
+            <thead>
+              <tr>
+                <th>Complaint ID</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Est. Resolution</th>
+                <th>Created Date</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageItems.length ? pageItems.map(c => `
+                <tr class="hover:bg-[var(--hover-bg)]">
+                  <td class="font-mono font-bold text-blue-600 dark:text-blue-400">${c.id}</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center">
+                        ${c.employeeName.split(' ').map(w=>w[0]).join('')}
+                      </div>
+                      <div>
+                        <div class="font-bold text-xs leading-tight">${c.employeeName}</div>
+                        <div class="text-[10px] text-[var(--text-subtle)] font-mono">${c.employeeCode}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="inline-flex items-center gap-1 font-semibold text-xs">
+                      <span class="material-symbols-outlined text-sm" style="color: ${DEPT_COLORS[c.department]}">${DEPT_ICONS[c.department]}</span>
+                      ${c.department}
+                    </span>
+                  </td>
+                  <td class="text-xs">${c.category}</td>
+                  <td>
+                    <span class="status-badge ${c.priority === 'Critical' ? 'status-critical' : c.priority === 'High' ? 'status-pending' : 'status-resolved'}">
+                      ${c.priority}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-badge ${c.status === 'Active' ? 'status-active' : 'status-resolved'}">
+                      ${c.status}
+                    </span>
+                  </td>
+                  <td class="text-xs text-[var(--text-muted)]">${c.estimatedResolution || '—'}</td>
+                  <td class="text-xs text-[var(--text-muted)]">
+                    <div>${c.createdDate}</div>
+                    <div class="text-[10px] text-[var(--text-subtle)]">${c.createdTime}</div>
+                  </td>
+                  <td class="text-center">
+                    <div class="inline-flex items-center gap-1">
+                      <button onclick="showViewModal('${c.id}')" class="p-1 rounded-lg text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40" title="View details">
+                        <span class="material-symbols-outlined text-base">visibility</span>
+                      </button>
+                      ${c.status === 'Active' && canResolve ? `
+                        <button onclick="openResolveModal('${c.id}')" class="p-1 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40" title="Resolve ticket">
+                          <span class="material-symbols-outlined text-base">task_alt</span>
+                        </button>
+                      ` : ''}
+                      <button onclick="printVoucher('${c.id}')" class="p-1 rounded-lg text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800" title="Print ERP Voucher">
+                        <span class="material-symbols-outlined text-base">print</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('') : `<tr><td colspan="9" class="text-center py-12 text-xs text-[var(--text-subtle)]">No matching complaints found in the database.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="p-3 border-t border-[var(--border-main)] flex items-center justify-between text-xs text-[var(--text-muted)] bg-[var(--bg-surface-subtle)]">
+          <div>
+            Showing <span class="font-bold text-[var(--text-main)]">${totalItems ? startIdx + 1 : 0}</span> to <span class="font-bold text-[var(--text-main)]">${Math.min(startIdx + complaintFilterState.limit, totalItems)}</span> of <span class="font-bold text-[var(--text-main)]">${totalItems}</span> entries
+          </div>
+          <div class="flex items-center gap-1">
+            <button ${complaintFilterState.page <= 1 ? 'disabled' : ''} onclick="complaintFilterState.page--; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')" class="p-1.5 rounded-lg border border-[var(--border-main)] disabled:opacity-40 hover:bg-[var(--hover-bg)]">
+              <span class="material-symbols-outlined text-sm">chevron_left</span>
+            </button>
+            <span class="px-2 font-semibold">Page ${complaintFilterState.page} of ${totalPages}</span>
+            <button ${complaintFilterState.page >= totalPages ? 'disabled' : ''} onclick="complaintFilterState.page++; renderView('${forcedDept ? forcedDept.toLowerCase()+'-department' : 'complaints'}')" class="p-1.5 rounded-lg border border-[var(--border-main)] disabled:opacity-40 hover:bg-[var(--hover-bg)]">
+              <span class="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+// ---------- 4. DEPARTMENT WORKSPACE PAGES ----------
+function renderDepartmentWorkspace(container, dept) {
+  // Access validation: Employees cannot access department management workspaces
+  if (currentUser.role === 'employee') {
+    container.innerHTML = `
+      <div class="erp-card p-12 text-center max-w-md mx-auto my-12 space-y-4">
+        <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto">
+          <span class="material-symbols-outlined text-3xl">lock</span>
+        </div>
+        <h2 class="text-xl font-bold text-[var(--text-main)]">Access Restricted</h2>
+        <p class="text-xs text-[var(--text-muted)]">
+          Staff employees can only submit and track their own tickets via the Employee Portal.
+        </p>
+        <button onclick="navigate('dashboard')" class="btn btn-primary text-xs">
+          Go to Employee Dashboard
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  // Access validation: Dept heads can only view their own department
+  if (currentUser.role === 'department' && currentUser.department !== dept) {
+    container.innerHTML = `
+      <div class="erp-card p-12 text-center max-w-md mx-auto my-12 space-y-4">
+        <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto">
+          <span class="material-symbols-outlined text-3xl">lock</span>
+        </div>
+        <h2 class="text-xl font-bold text-[var(--text-main)]">Access Restricted</h2>
+        <p class="text-xs text-[var(--text-muted)]">
+          Department permissions policy: You can only access complaints routed to the <strong>${currentUser.department}</strong> department.
+        </p>
+        <button onclick="navigate('${currentUser.department.toLowerCase()}-department')" class="btn btn-primary text-xs">
+          Return to ${currentUser.department} Department
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  // Render department statistics header + scoped complaint table
+  const deptComplaints = getComplaints().filter(c => c.department === dept);
+  const total = deptComplaints.length;
+  const active = deptComplaints.filter(c => c.status === 'Active').length;
+  const resolved = deptComplaints.filter(c => c.status === 'Resolved').length;
+  const critical = deptComplaints.filter(c => c.priority === 'Critical' && c.status === 'Active').length;
+
+  container.innerHTML = `
+    <div class="space-y-6">
+      
+      <!-- Department Statistics Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="erp-card p-4 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background: ${DEPT_COLORS[dept]}15; color: ${DEPT_COLORS[dept]}">
+            <span class="material-symbols-outlined text-xl">confirmation_number</span>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-[var(--text-main)]">${total}</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">${dept} Total</div>
+          </div>
+        </div>
+
+        <div class="erp-card p-4 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">pending_actions</span>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-emerald-600">${active}</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Active Open</div>
+          </div>
+        </div>
+
+        <div class="erp-card p-4 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">task_alt</span>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-[var(--text-muted)]">${resolved}</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Resolved</div>
+          </div>
+        </div>
+
+        <div class="erp-card p-4 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">warning</span>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-red-600">${critical}</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)]">Critical Priority</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scoped Complaint List Table -->
+      <div id="dept-table-container"></div>
+    </div>
+  `;
+
+  const subContainer = document.getElementById('dept-table-container');
+  renderComplaintManagement(subContainer, dept);
+}
+
+// ---------- 5. EMPLOYEES DIRECTORY ----------
+function renderEmployeeDirectory(container) {
+  if (currentUser.role !== 'admin') {
+    container.innerHTML = `<div class="erp-card p-8 text-center text-xs">Admin access required.</div>`;
+    return;
+  }
+
+  const users = getUsers();
+  container.innerHTML = `
+    <div class="space-y-5 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)]">Employee Directory</h1>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Manage enterprise personnel, department allocations, and access privileges.</p>
+        </div>
+      </div>
+
+      <div class="erp-card overflow-hidden">
+        <table class="erp-table">
+          <thead>
+            <tr>
+              <th>Employee Code</th>
+              <th>Full Name</th>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Assigned Department</th>
+              <th>Tickets Filed</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${users.map(u => {
+              const filedCount = getComplaints().filter(c => c.employeeId === u.id).length;
+              return `
+                <tr>
+                  <td class="font-mono font-bold text-blue-600 dark:text-blue-400">${u.code}</td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">
+                        ${u.avatar}
+                      </div>
+                      <span class="font-bold text-xs">${u.name}</span>
+                    </div>
+                  </td>
+                  <td class="text-xs text-[var(--text-muted)] font-mono">${u.email}</td>
+                  <td>
+                    <span class="status-badge ${u.role === 'admin' ? 'status-critical' : u.role === 'department' ? 'status-pending' : 'status-active'}">
+                      ${u.role}
+                    </span>
+                  </td>
+                  <td class="text-xs font-semibold">${u.department}</td>
+                  <td class="font-mono font-bold text-xs">${filedCount}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 6. REPORTS & ANALYTICS ----------
+function renderReportsAnalytics(container) {
+  const complaints = getComplaints();
+  const total = complaints.length;
+  const resolved = complaints.filter(c => c.status === 'Resolved').length;
+  const critical = complaints.filter(c => c.priority === 'Critical').length;
+  const resolutionRate = total ? Math.round((resolved / total) * 100) : 0;
+
+  container.innerHTML = `
+    <div class="space-y-6 animate-fade-in">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)]">Reports &amp; Operational Analytics</h1>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Audit-ready complaint reports, MTTR breakdown, and exportable datasets.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportCSV()" class="btn btn-secondary text-xs">
+            <span class="material-symbols-outlined text-base">table_view</span> Export CSV (Excel)
+          </button>
+          <button onclick="exportPDFReport()" class="btn btn-primary text-xs shadow-md">
+            <span class="material-symbols-outlined text-base">picture_as_pdf</span> Print / Save PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Overview Metric Tiles -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="erp-card p-4 text-center">
+          <div class="text-3xl font-black text-blue-600">${total}</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mt-1">Total Logged Tickets</div>
+        </div>
+        <div class="erp-card p-4 text-center">
+          <div class="text-3xl font-black text-emerald-600">${resolved}</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mt-1">Successfully Closed</div>
+        </div>
+        <div class="erp-card p-4 text-center">
+          <div class="text-3xl font-black text-red-600">${critical}</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mt-1">Critical Faults</div>
+        </div>
+        <div class="erp-card p-4 text-center">
+          <div class="text-3xl font-black text-indigo-600">${resolutionRate}%</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mt-1">SLA Resolution Rate</div>
+        </div>
+      </div>
+
+      <!-- Analytics Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="erp-card p-5">
+          <h3 class="text-sm font-bold text-[var(--text-main)] mb-3">Severity Breakdown</h3>
+          <div class="h-60 relative flex items-center justify-center">
+            <canvas id="report-priority-chart"></canvas>
+          </div>
+        </div>
+        <div class="erp-card p-5">
+          <h3 class="text-sm font-bold text-[var(--text-main)] mb-3">Monthly Ticket Trends</h3>
+          <div class="h-60 relative">
+            <canvas id="report-trend-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Printable Table -->
+      <div class="erp-card overflow-hidden" id="printable-report-area">
+        <div class="p-4 border-b border-[var(--border-main)] flex justify-between items-center bg-[var(--bg-surface-subtle)]">
+          <h3 class="text-sm font-bold text-[var(--text-main)]">Master Complaint Registry</h3>
+          <span class="text-xs font-mono text-[var(--text-subtle)]">Total records: ${complaints.length}</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="erp-table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Employee</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Resolution Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${complaints.map(c => `
+                <tr>
+                  <td class="font-mono font-bold text-blue-600">${c.id}</td>
+                  <td class="font-bold text-xs">${c.employeeName}</td>
+                  <td>${c.department}</td>
+                  <td class="text-xs">${c.category}</td>
+                  <td><span class="status-badge ${c.priority==='Critical'?'status-critical':'status-resolved'}">${c.priority}</span></td>
+                  <td><span class="status-badge ${c.status==='Active'?'status-active':'status-resolved'}">${c.status}</span></td>
+                  <td class="text-xs">${c.createdDate}</td>
+                  <td class="text-xs text-[var(--text-muted)]">${c.resolvedDate || '—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  setTimeout(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#94a3b8' : '#475569';
+    const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+    const pCounts = { Low: 0, Medium: 0, High: 0, Critical: 0 };
+    complaints.forEach(c => { if(pCounts[c.priority]!==undefined) pCounts[c.priority]++; });
+
+    const ctx1 = document.getElementById('report-priority-chart');
+    if (ctx1) {
+      const c1 = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+          labels: ['Low', 'Medium', 'High', 'Critical'],
+          datasets: [{
+            data: [pCounts.Low, pCounts.Medium, pCounts.High, pCounts.Critical],
+            backgroundColor: ['#60a5fa', '#f59e0b', '#f97316', '#ef4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 11 } } } }
+        }
+      });
+      activeCharts.push(c1);
+    }
+
+    const ctx2 = document.getElementById('report-trend-chart');
+    if (ctx2) {
+      const c2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Current'],
+          datasets: [{
+            label: 'Complaints Logged',
+            data: [6, 12, 9, 15, complaints.length],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { display: false }, ticks: { color: textColor } },
+            y: { grid: { color: gridColor }, ticks: { color: textColor } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+      activeCharts.push(c2);
+    }
+  }, 100);
+}
+
+// ---------- 7. NOTIFICATIONS CENTER ----------
+function renderNotificationsCenter(container) {
+  let list = getNotifications();
+  if (currentUser.role !== 'admin') {
+    list = list.filter(n => n.userId === currentUser.id);
+  }
+  list.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  container.innerHTML = `
+    <div class="space-y-5 animate-fade-in max-w-3xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)]">Notifications &amp; Alerts</h1>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Real-time status updates on submitted tickets, assignments, and resolution notes.</p>
+        </div>
+        <button onclick="markAllNotificationsRead()" class="btn btn-secondary text-xs">
+          <span class="material-symbols-outlined text-sm">done_all</span> Mark All Read
+        </button>
+      </div>
+
+      <div class="erp-card divide-y divide-[var(--border-subtle)] overflow-hidden">
+        ${list.length ? list.map(n => {
+          const typeIcons = { submitted: 'send', assigned: 'assignment_ind', resolved: 'check_circle', updated: 'update', alert: 'warning' };
+          const iconColor = n.type === 'resolved' ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' : n.type === 'alert' ? 'text-red-600 bg-red-50 dark:bg-red-950/40' : 'text-blue-600 bg-blue-50 dark:bg-blue-950/40';
+          return `
+            <div class="p-4 flex items-start gap-3.5 hover:bg-[var(--hover-bg)] transition-colors cursor-pointer ${!n.read ? 'bg-blue-50/40 dark:bg-blue-950/20' : ''}" onclick="markNotificationRead('${n.id}')">
+              <div class="w-9 h-9 rounded-xl ${iconColor} flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-lg">${typeIcons[n.type] || 'info'}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="text-xs ${!n.read ? 'font-bold' : 'font-medium'} text-[var(--text-main)] leading-snug">${n.message}</div>
+                <div class="text-[10px] text-[var(--text-subtle)] mt-1">${timeAgo(new Date(n.timestamp))}</div>
+              </div>
+              ${!n.read ? '<span class="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-2"></span>' : ''}
+            </div>
+          `;
+        }).join('') : `<div class="p-12 text-center text-xs text-[var(--text-subtle)]">No notifications at this time.</div>`}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 8. SYSTEM SETTINGS ----------
+function renderSystemSettings(container) {
+  const isDark = document.documentElement.classList.contains('dark');
+  container.innerHTML = `
+    <div class="space-y-6 animate-fade-in max-w-2xl">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight text-[var(--text-main)]">System Settings</h1>
+        <p class="text-xs text-[var(--text-muted)] mt-1">Configure application parameters, appearance, and local offline data state.</p>
+      </div>
+
+      <!-- Profile Summary -->
+      <div class="erp-card p-5 space-y-3">
+        <h3 class="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600 text-lg">account_circle</span> Active Account Profile
+        </h3>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div><span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Name</span><span class="font-bold">${currentUser.name}</span></div>
+          <div><span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Staff ID</span><span class="font-mono font-bold text-blue-600">${currentUser.code}</span></div>
+          <div><span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Role</span><span class="capitalize font-semibold">${currentUser.role}</span></div>
+          <div><span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Department</span><span class="font-semibold">${currentUser.department}</span></div>
+        </div>
+      </div>
+
+      <!-- Theme & Display -->
+      <div class="erp-card p-5 space-y-4">
+        <h3 class="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600 text-lg">palette</span> Visual Aesthetics
+        </h3>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs font-bold text-[var(--text-main)]">Theme Mode</div>
+            <div class="text-[11px] text-[var(--text-muted)]">Toggle between Corporate Light and High-Contrast Dark mode</div>
+          </div>
+          <button onclick="toggleTheme()" class="btn btn-secondary text-xs">
+            <span class="material-symbols-outlined text-base">${isDark ? 'light_mode' : 'dark_mode'}</span>
+            ${isDark ? 'Switch to Light' : 'Switch to Dark'}
+          </button>
+        </div>
+      </div>
+
+      <!-- Offline Database Management -->
+      <div class="erp-card p-5 space-y-4 border-red-200 dark:border-red-900/40">
+        <h3 class="text-sm font-bold text-red-600 flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg">database</span> Reset Local ERP Data
+        </h3>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs font-bold text-[var(--text-main)]">Factory Reset Demo Database</div>
+            <div class="text-[11px] text-[var(--text-muted)]">Restore all 10 sample tickets, users, and audit logs to clean initial state.</div>
+          </div>
+          <button onclick="resetAllData()" class="btn btn-danger text-xs">
+            <span class="material-symbols-outlined text-base">restart_alt</span> Reset All
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- COMPLAINT ACTIONS (SEND, RESOLVE, VIEW, PRINT) ----------
+let selectedAttachmentName = null;
+
+function openSendComplaint(preselectDept = '') {
+  document.getElementById('modal-emp-code').textContent = currentUser.code;
+  document.getElementById('modal-emp-name').textContent = currentUser.name;
+  document.getElementById('modal-emp-dept').textContent = currentUser.department;
+
+  const deptSelect = document.getElementById('complaint-department');
+  deptSelect.value = preselectDept || (currentUser.role === 'department' ? currentUser.department : '');
+  
+  document.getElementById('complaint-category').value = '';
+  document.getElementById('complaint-desc').value = '';
+  clearFile();
+
+  openModal('modal-send-complaint');
+}
+
+function updateCategoriesForDept(dept) {
+  const cat = document.getElementById('complaint-category');
+  if (!dept) return;
+  // Dynamic recommendations based on department selected
+}
+
+function submitComplaint() {
+  const dept = document.getElementById('complaint-department').value;
+  const category = document.getElementById('complaint-category').value;
+  const priorityEl = document.querySelector('input[name="priority-radio"]:checked');
+  const priority = priorityEl ? priorityEl.value : 'Medium';
+  const desc = document.getElementById('complaint-desc').value.trim();
+
+  if (!dept || !category || !desc) {
+    showToast('Please fill all mandatory fields (*)', 'error');
+    return;
+  }
+
+  const now = new Date();
+  const newId = getNextComplaintId();
+
+  const newTicket = {
+    id: newId,
+    employeeId: currentUser.id,
+    employeeName: currentUser.name,
+    employeeCode: currentUser.code,
+    department: dept,
+    category: category,
+    priority: priority,
+    status: 'Active',
+    description: desc,
+    attachment: selectedAttachmentName || null,
+    createdDate: now.toISOString().split('T')[0],
+    createdTime: now.toTimeString().slice(0, 5),
+    estimatedResolution: priority === 'Critical' ? 'Immediate (< 2 Hrs)' : priority === 'High' ? 'Same Day' : '1-2 Days',
+    resolvedBy: null,
+    resolvedDate: null,
+    resolvedTime: null,
+    resolutionRemarks: null,
+    locked: false
+  };
+
+  const list = getComplaints();
+  list.unshift(newTicket);
+  dbSet(DB_KEYS.complaints, list);
+
+  // Push Notifications
+  addNotification(currentUser.id, `Complaint ${newId} registered successfully in ${dept} Queue.`, 'submitted', newId);
+  
+  // Notify target department head
+  getUsers().filter(u => u.role === 'department' && u.department === dept).forEach(u => {
+    addNotification(u.id, `🚨 New ${priority} ticket ${newId} assigned to ${dept}: ${category}`, 'assigned', newId);
+  });
+
+  // Log Activity
+  addActivity('Complaint Submitted', currentUser.id, newId, `${dept} — ${category} (${priority})`);
+
+  closeModal('modal-send-complaint');
+  showToast(`Ticket ${newId} logged successfully!`, 'success');
+  updateNotifBadge();
+  updateSidebarCounts();
+
+  // Refresh current view
+  renderView(location.hash.slice(1) || 'dashboard');
+}
+
+function showViewModal(cmpId) {
+  const c = getComplaints().find(x => x.id === cmpId);
+  if (!c) return;
+
+  const canResolve = (c.status === 'Active') && (currentUser.role === 'admin' || (currentUser.role === 'department' && currentUser.department === c.department));
+
+  const body = document.getElementById('view-complaint-body');
+  body.innerHTML = `
+    <div class="px-6 py-4 border-b border-[var(--border-main)] flex justify-between items-center bg-[var(--bg-surface-subtle)]">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-blue-600 text-2xl">description</span>
+        <div>
+          <h3 class="text-base font-black text-[var(--text-main)] font-mono">${c.id}</h3>
+          <span class="text-[10px] text-[var(--text-subtle)] font-medium">Ticket Lifecycle &amp; Resolution Audit</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="status-badge ${c.status === 'Active' ? 'status-active' : 'status-resolved'}">${c.status}</span>
+        <button onclick="closeModal('modal-view-complaint')" class="p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--hover-bg)]">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 overflow-y-auto max-h-[75vh] space-y-4">
+      
+      <!-- Key Metadata Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-main)] text-xs">
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Employee</span>
+          <span class="font-bold">${c.employeeName}</span>
+          <span class="text-[10px] text-[var(--text-muted)] block font-mono">${c.employeeCode}</span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Assigned Department</span>
+          <span class="font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm" style="color: ${DEPT_COLORS[c.department]}">${DEPT_ICONS[c.department]}</span>
+            ${c.department}
+          </span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Priority</span>
+          <span class="status-badge ${c.priority==='Critical'?'status-critical':'status-resolved'} mt-0.5">${c.priority}</span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Category</span>
+          <span class="font-medium">${c.category}</span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Created Timestamp</span>
+          <span class="font-medium">${c.createdDate} &bull; ${c.createdTime}</span>
+        </div>
+        <div>
+          <span class="text-[var(--text-subtle)] block text-[10px] font-bold uppercase">Est. Resolution Time</span>
+          <span class="font-semibold text-blue-600">${c.estimatedResolution || 'Under Assessment'}</span>
+        </div>
+      </div>
+
+      <!-- Problem Description -->
+      <div>
+        <label class="block text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mb-1">Issue Description</label>
+        <div class="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-main)] text-xs text-[var(--text-main)] leading-relaxed">
+          ${c.description}
+        </div>
+      </div>
+
+      ${c.attachment ? `
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-[var(--text-subtle)] mb-1">Attachment</label>
+          <div class="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300 font-mono">
+            <span class="material-symbols-outlined text-base">attachment</span>
+            <span>${c.attachment}</span>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Resolution Stamp (if resolved) -->
+      ${c.resolvedBy ? `
+        <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-2">
+          <div class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300 font-bold text-xs">
+            <span class="material-symbols-outlined text-base">verified</span>
+            Resolution Confirmation &amp; Lock Details
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div><span class="text-[var(--text-subtle)]">Resolved By:</span> <strong class="text-emerald-800 dark:text-emerald-200">${c.resolvedBy}</strong></div>
+            <div><span class="text-[var(--text-subtle)]">Closed At:</span> <strong class="text-emerald-800 dark:text-emerald-200">${c.resolvedDate} at ${c.resolvedTime}</strong></div>
+          </div>
+          <div class="text-xs text-[var(--text-main)] pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60">
+            <span class="text-[var(--text-subtle)] block text-[10px] uppercase font-bold">Technician Remarks:</span>
+            ${c.resolutionRemarks}
+          </div>
+        </div>
+      ` : ''}
+
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="px-6 py-3.5 border-t border-[var(--border-main)] flex items-center justify-between bg-[var(--bg-surface-subtle)]">
+      <button onclick="printVoucher('${c.id}')" class="btn btn-secondary text-xs">
+        <span class="material-symbols-outlined text-base">print</span> Print Voucher
+      </button>
+
+      <div class="flex items-center gap-2">
+        ${canResolve ? `
+          <button onclick="closeModal('modal-view-complaint'); openResolveModal('${c.id}');" class="btn text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md">
+            <span class="material-symbols-outlined text-base">task_alt</span> Resolve Ticket
+          </button>
+        ` : ''}
+        <button onclick="closeModal('modal-view-complaint')" class="btn btn-secondary text-xs">Close</button>
+      </div>
+    </div>
+  `;
+
+  openModal('modal-view-complaint');
+}
+
+function openResolveModal(cmpId) {
+  const c = getComplaints().find(x => x.id === cmpId);
+  if (!c) return;
+
+  document.getElementById('resolve-cmp-id').textContent = c.id;
+  document.getElementById('resolve-emp-name').textContent = c.employeeName;
+  document.getElementById('resolve-dept').textContent = c.department;
+  document.getElementById('resolve-desc').textContent = c.description;
+  document.getElementById('resolve-est-time').value = c.estimatedResolution || '1 Hour';
+  document.getElementById('resolve-remarks').value = '';
+  document.getElementById('resolve-complaint-id-hidden').value = c.id;
+
+  openModal('modal-resolve-complaint');
+}
+
+function resolveComplaint() {
+  const cmpId = document.getElementById('resolve-complaint-id-hidden').value;
+  const estTime = document.getElementById('resolve-est-time').value.trim();
+  const remarks = document.getElementById('resolve-remarks').value.trim();
+
+  if (!estTime || !remarks) {
+    showToast('Please provide resolution time & remarks', 'error');
+    return;
+  }
+
+  const list = getComplaints();
+  const idx = list.findIndex(c => c.id === cmpId);
+  if (idx < 0) return;
+
+  const now = new Date();
+  list[idx].status = 'Resolved';
+  list[idx].estimatedResolution = estTime;
+  list[idx].resolvedBy = currentUser.name;
+  list[idx].resolvedDate = now.toISOString().split('T')[0];
+  list[idx].resolvedTime = now.toTimeString().slice(0, 5);
+  list[idx].resolutionRemarks = remarks;
+  list[idx].locked = true;
+
+  dbSet(DB_KEYS.complaints, list);
+
+  // Notify original employee
+  addNotification(list[idx].employeeId, `✅ Ticket ${cmpId} has been resolved by ${currentUser.name}: ${remarks.slice(0, 60)}...`, 'resolved', cmpId);
+  
+  // Log Activity
+  addActivity('Complaint Resolved', currentUser.id, cmpId, `Fixed by ${currentUser.name}`);
+
+  closeModal('modal-resolve-complaint');
+  showToast(`Complaint ${cmpId} successfully marked as Resolved!`, 'success');
+  updateNotifBadge();
+  updateSidebarCounts();
+
+  renderView(location.hash.slice(1) || 'dashboard');
+}
+
+// ---------- PRINT VOUCHER & EXPORT ----------
+function printVoucher(cmpId) {
+  const c = getComplaints().find(x => x.id === cmpId);
+  if (!c) return;
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>TechFlow ERP — Ticket Voucher ${c.id}</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; font-size: 13px; }
+        .header { border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 900; color: #2563eb; letter-spacing: -0.5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .field-label { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #64748b; }
+        .field-value { font-size: 13px; font-weight: bold; margin-top: 2px; }
+        .desc-box { padding: 12px; background: #f1f5f9; border-radius: 6px; border: 1px solid #cbd5e1; margin: 15px 0; }
+        .resolution-box { padding: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; margin-top: 15px; }
+        .signatures { margin-top: 50px; display: flex; justify-content: space-between; }
+        .sig-line { width: 180px; border-top: 1px solid #94a3b8; text-align: center; font-size: 11px; padding-top: 5px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div>
+          <div class="logo">TechFlow ERP</div>
+          <div style="font-size: 11px; color: #64748b; font-weight: bold;">MANUFACTURING IT &amp; FACILITY MAINTENANCE VOUCHER</div>
+        </div>
+        <div style="text-align: right; font-family: monospace; font-weight: bold; font-size: 18px; color: #2563eb;">
+          ${c.id}
+        </div>
+      </div>
+
+      <div class="grid">
+        <div><div class="field-label">Employee Name</div><div class="field-value">${c.employeeName} (${c.employeeCode})</div></div>
+        <div><div class="field-label">Target Department</div><div class="field-value">${c.department} Dept</div></div>
+        <div><div class="field-label">Category</div><div class="field-value">${c.category}</div></div>
+        <div><div class="field-label">Priority Level</div><div class="field-value">${c.priority}</div></div>
+        <div><div class="field-label">Created Date &amp; Time</div><div class="field-value">${c.createdDate} at ${c.createdTime}</div></div>
+        <div><div class="field-label">Status</div><div class="field-value">${c.status}</div></div>
+      </div>
+
+      <div class="field-label">Fault Description:</div>
+      <div class="desc-box">${c.description}</div>
+
+      ${c.resolvedBy ? `
+        <div class="resolution-box">
+          <div style="font-weight: bold; color: #065f46; font-size: 12px; margin-bottom: 5px;">✓ RESOLUTION RECORD</div>
+          <div><strong>Resolved By:</strong> ${c.resolvedBy} &bull; <strong>Date:</strong> ${c.resolvedDate} at ${c.resolvedTime}</div>
+          <div style="margin-top: 5px;"><strong>Remarks:</strong> ${c.resolutionRemarks}</div>
+        </div>
+      ` : ''}
+
+      <div class="signatures">
+        <div class="sig-line">Plant Operator Signature</div>
+        <div class="sig-line">Engineer / Resolver Signature</div>
+        <div class="sig-line">Plant Manager Sign-Off</div>
+      </div>
+
+      <div style="margin-top: 40px; font-size: 10px; color: #94a3b8; text-align: center;">
+        TechFlow ERP System &bull; Generated on ${new Date().toLocaleString()} &bull; Official Plant Document
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  setTimeout(() => { printWindow.print(); }, 400);
+}
+
+function exportCSV() {
+  const list = getComplaints();
+  let csv = '\uFEFF'; // UTF-8 BOM for Microsoft Excel compatibility
+  csv += 'Complaint ID,Employee Name,Employee Code,Department,Category,Priority,Status,Description,Created Date,Created Time,Est Resolution,Resolved By,Resolved Date,Resolution Remarks\n';
+  
+  list.forEach(c => {
+    const cleanDesc = (c.description || '').replace(/"/g, '""').replace(/\r?\n/g, ' ');
+    const cleanRemarks = (c.resolutionRemarks || '').replace(/"/g, '""').replace(/\r?\n/g, ' ');
+    csv += `"${c.id || ''}","${c.employeeName || ''}","${c.employeeCode || ''}","${c.department || ''}","${c.category || ''}","${c.priority || ''}","${c.status || ''}","${cleanDesc}","${c.createdDate || ''}","${c.createdTime || ''}","${c.estimatedResolution||''}","${c.resolvedBy||''}","${c.resolvedDate||''}","${cleanRemarks}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `TechFlow_ERP_Complaints_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Excel CSV dataset exported successfully!', 'success');
+}
+
+function importExcelCSV(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length <= 1) {
+        showToast('CSV file is empty or invalid format', 'error');
+        return;
+      }
+      
+      const newComplaints = [];
+      for (let i = 1; i < lines.length; i++) {
+        const row = parseCSVRow(lines[i]);
+        if (row.length >= 7) {
+          newComplaints.push({
+            id: row[0] || getNextComplaintId(),
+            employeeName: row[1] || 'Imported Staff',
+            employeeCode: row[2] || 'EMP-000',
+            department: row[3] || 'IT',
+            category: row[4] || 'General Maintenance',
+            priority: row[5] || 'Medium',
+            status: row[6] || 'Active',
+            description: row[7] || 'Imported from industrial Excel file',
+            createdDate: row[8] || new Date().toISOString().split('T')[0],
+            createdTime: row[9] || '08:00',
+            estimatedResolution: row[10] || '',
+            resolvedBy: row[11] || null,
+            resolvedDate: row[12] || null,
+            resolutionRemarks: row[13] || null,
+            locked: (row[6] === 'Resolved' || row[6] === 'Inactive')
+          });
+        }
+      }
+      
+      if (newComplaints.length > 0) {
+        const existing = getComplaints();
+        const combined = [...newComplaints, ...existing];
+        dbSet(DB_KEYS.complaints, combined);
+        showToast(`Imported ${newComplaints.length} tickets from Excel successfully!`, 'success');
+        renderView(location.hash.slice(1) || 'dashboard');
+      } else {
+        showToast('No valid complaint rows detected in CSV', 'error');
+      }
+    } catch (err) {
+      showToast('Error importing Excel file: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseCSVRow(text) {
+  const re = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
+  const a = [];
+  text.replace(re, function(m0, m1, m2, m3) {
+    if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+    else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"').replace(/""/g, '"'));
+    else if (m3 !== undefined) a.push(m3);
+    return '';
+  });
+  if (/,\s*$/.test(text)) a.push('');
+  return a;
+}
+
+function exportPDFReport() {
+  window.print();
+}
+
+// ---------- ATTACHMENT DRAG & DROP ----------
+function handleFileSelect(input) {
+  if (input.files && input.files[0]) {
+    selectedAttachmentName = input.files[0].name;
+    document.getElementById('selected-file-name').textContent = selectedAttachmentName;
+    document.getElementById('file-name-display').classList.remove('hidden');
+    document.getElementById('file-name-display').classList.add('flex');
+  }
+}
+
+function clearFile() {
+  selectedAttachmentName = null;
+  const input = document.getElementById('file-input');
+  if (input) input.value = '';
+  const display = document.getElementById('file-name-display');
+  if (display) {
+    display.classList.add('hidden');
+    display.classList.remove('flex');
+  }
+}
+
+// ---------- NOTIFICATIONS HELPERS ----------
+function addNotification(userId, message, type, complaintId = null) {
+  const list = getNotifications();
+  list.unshift({
+    id: 'N' + String(list.length + 1).padStart(3, '0'),
+    userId: userId,
+    message: message,
+    type: type,
+    read: false,
+    timestamp: new Date().toISOString(),
+    complaintId: complaintId
+  });
+  dbSet(DB_KEYS.notifications, list);
+}
+
+function addActivity(action, userId, complaintId, details) {
+  const list = getActivity();
+  list.unshift({
+    id: 'A' + String(list.length + 1).padStart(3, '0'),
+    action: action,
+    userId: userId,
+    complaintId: complaintId,
+    timestamp: new Date().toISOString(),
+    details: details
+  });
+  dbSet(DB_KEYS.activity, list);
+}
+
+function updateNotifBadge() {
+  const list = getNotifications().filter(n => (currentUser.role === 'admin' || n.userId === currentUser.id) && !n.read);
+  const badge = document.getElementById('notif-badge');
+  const dot = document.getElementById('sidebar-notif-dot');
+
+  if (list.length > 0) {
+    if (badge) {
+      badge.textContent = list.length > 9 ? '9+' : list.length;
+      badge.classList.remove('hidden');
+      badge.classList.add('flex');
+    }
+    if (dot) dot.classList.remove('hidden');
+  } else {
+    if (badge) {
+      badge.classList.add('hidden');
+      badge.classList.remove('flex');
+    }
+    if (dot) dot.classList.add('hidden');
+  }
+}
+
+function toggleNotifDropdown() {
+  const dd = document.getElementById('notif-dropdown');
+  if (!dd.classList.contains('hidden')) {
+    dd.classList.add('hidden');
+    return;
+  }
+
+  let list = getNotifications();
+  if (currentUser.role !== 'admin') {
+    list = list.filter(n => n.userId === currentUser.id);
+  }
+  list.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const preview = list.slice(0, 6);
+
+  dd.innerHTML = `
+    <div class="p-3.5 border-b border-[var(--border-main)] flex items-center justify-between bg-[var(--bg-surface-subtle)]">
+      <div class="text-xs font-bold text-[var(--text-main)]">Notifications</div>
+      <button onclick="navigate('notifications'); toggleNotifDropdown();" class="text-[11px] font-bold text-blue-600 hover:underline">View All</button>
+    </div>
+    <div class="divide-y divide-[var(--border-subtle)] max-h-72 overflow-y-auto">
+      ${preview.length ? preview.map(n => `
+        <div class="p-3 text-xs hover:bg-[var(--hover-bg)] cursor-pointer ${!n.read ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}" onclick="markNotificationRead('${n.id}')">
+          <div class="font-medium text-[var(--text-main)] leading-snug">${n.message}</div>
+          <div class="text-[10px] text-[var(--text-subtle)] mt-1">${timeAgo(new Date(n.timestamp))}</div>
+        </div>
+      `).join('') : '<div class="p-6 text-center text-xs text-[var(--text-subtle)]">No notifications</div>'}
+    </div>
+  `;
+
+  dd.classList.remove('hidden');
+}
+
+function markNotificationRead(id) {
+  const list = getNotifications();
+  const idx = list.findIndex(n => n.id === id);
+  if (idx >= 0) {
+    list[idx].read = true;
+    dbSet(DB_KEYS.notifications, list);
+  }
+  updateNotifBadge();
+  if (location.hash === '#notifications') renderView('notifications');
+}
+
+function markAllNotificationsRead() {
+  const list = getNotifications();
+  list.forEach(n => {
+    if (currentUser.role === 'admin' || n.userId === currentUser.id) n.read = true;
+  });
+  dbSet(DB_KEYS.notifications, list);
+  updateNotifBadge();
+  if (location.hash === '#notifications') renderView('notifications');
+  showToast('All notifications marked as read', 'success');
+}
+
+// ---------- THEME TOGGLE ----------
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.classList.toggle('dark');
+  localStorage.setItem(DB_KEYS.theme, isDark ? 'dark' : 'light');
+  document.getElementById('theme-icon').textContent = isDark ? 'light_mode' : 'dark_mode';
+  
+  const page = location.hash.slice(1) || 'dashboard';
+  if (['dashboard', 'reports'].includes(page)) renderView(page);
+}
+
+function initTheme() {
+  const theme = localStorage.getItem(DB_KEYS.theme);
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('theme-icon').textContent = 'light_mode';
+  }
+}
+
+// ---------- SIDEBAR COLLAPSE ----------
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+
+  if (window.innerWidth < 768) {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  } else {
+    sidebar.classList.toggle('collapsed');
+  }
+}
+
+// ---------- GLOBAL SEARCH ----------
+function handleGlobalSearch(val) {
+  if (!val.trim()) return;
+  complaintFilterState.search = val.trim();
+  complaintFilterState.page = 1;
+  navigate('complaints');
+}
+
+// ---------- UI UTILITIES (TOAST, MODALS, TIMEAGO) ----------
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const colors = { success: 'bg-emerald-600', error: 'bg-red-600', info: 'bg-blue-600' };
+  const icons = { success: 'check_circle', error: 'error', info: 'info' };
+
+  const toast = document.createElement('div');
+  toast.className = `p-3.5 rounded-xl shadow-xl text-white text-xs font-semibold flex items-center gap-2.5 ${colors[type] || colors.info} animate-slide-up pointer-events-auto min-w-[260px]`;
+  toast.innerHTML = `
+    <span class="material-symbols-outlined text-lg">${icons[type] || 'info'}</span>
+    <span class="flex-1">${msg}</span>
+    <button onclick="this.parentElement.remove()" class="text-white/80 hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+  `;
+  c.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+function timeAgo(date) {
+  const sec = Math.floor((new Date() - date) / 1000);
+  if (sec < 60) return 'Just now';
+  if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+  return Math.floor(sec / 86400) + 'd ago';
+}
+
+function updateLiveClock() {
+  const el = document.getElementById('live-clock-text');
+  if (!el) return;
+  const now = new Date();
+  el.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function resetAllData() {
+  if (confirm('Are you sure you want to reset all complaints and local database to default demo state?')) {
+    Object.values(DB_KEYS).forEach(k => { if (k !== DB_KEYS.theme) localStorage.removeItem(k); });
+    seedDatabase();
+    showToast('Database reset to clean factory state.', 'success');
+    navigate('dashboard');
+  }
+}
+
+// ---------- INITIALIZATION ----------
+document.addEventListener('DOMContentLoaded', async () => {
+  // Clear any existing cached session so login screen is always required
+  localStorage.removeItem(DB_KEYS.session);
+  currentUser = null;
+
+  seedDatabase();
+  await loadFromServerBackend();
+  initTheme();
+  updateLiveClock();
+  setInterval(updateLiveClock, 30000);
+
+  // Ensure login screen is visible and app shell is hidden
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-shell').classList.add('hidden');
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+});
+</script>
+
+</body>
+</html>

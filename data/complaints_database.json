@@ -1,0 +1,74 @@
+{
+  "complaints": [],
+  "users": [
+    {
+      "id": "U001",
+      "code": "EMP-100",
+      "username": "admin",
+      "password": "admin123",
+      "name": "System Administrator",
+      "email": "admin@plant.corp",
+      "role": "admin",
+      "department": "Executive IT",
+      "avatar": "SA"
+    },
+    {
+      "id": "U002",
+      "code": "EMP-102",
+      "username": "it_dept",
+      "password": "it123",
+      "name": "IT Department Head",
+      "email": "it.dept@plant.corp",
+      "role": "department",
+      "department": "IT",
+      "avatar": "IT"
+    },
+    {
+      "id": "U003",
+      "code": "EMP-103",
+      "username": "elec_dept",
+      "password": "elec123",
+      "name": "Electronics Dept Head",
+      "email": "electronics.dept@plant.corp",
+      "role": "department",
+      "department": "Electronics",
+      "avatar": "EL"
+    },
+    {
+      "id": "U004",
+      "code": "EMP-104",
+      "username": "electrical_dept",
+      "password": "elec456",
+      "name": "Electrical Dept Head",
+      "email": "electrical.dept@plant.corp",
+      "role": "department",
+      "department": "Electrical",
+      "avatar": "ED"
+    },
+    {
+      "id": "U005",
+      "code": "EMP-105",
+      "username": "mech_dept",
+      "password": "mech123",
+      "name": "Mechanical Dept Head",
+      "email": "mechanical.dept@plant.corp",
+      "role": "department",
+      "department": "Mechanical",
+      "avatar": "MD"
+    },
+    {
+      "id": "U006",
+      "code": "EMP-201",
+      "username": "emp001",
+      "password": "emp123",
+      "name": "Plant Operator",
+      "email": "operator01@plant.corp",
+      "role": "employee",
+      "department": "Production Floor",
+      "avatar": "PO"
+    }
+  ],
+  "notifications": [],
+  "activity": [],
+  "lastUpdated": "2026-08-23T10:55:28.082Z"
+}
