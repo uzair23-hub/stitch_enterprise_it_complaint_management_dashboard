@@ -1,5 +1,5 @@
 /**
- * TechFlow ERP — Production-Ready Zero-Dependency Industrial Server
+ * Keystone Enterprises — Production-Ready Zero-Dependency Industrial Server
  * Auto-syncs all entered data to disk in JSON and Excel (CSV) formats.
  * Works online and 100% offline in air-gapped server environments.
  */
@@ -188,16 +188,33 @@ const server = http.createServer((req, res) => {
   });
 });
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`\n[INFO] Port ${PORT} is already in use.`);
+    console.log(`[INFO] Server may already be running at http://localhost:${PORT}`);
+    console.log('[INFO] Exiting gracefully...');
+    process.exit(0);
+  } else {
+    console.error('Server error:', err);
+    process.exit(1);
+  }
+});
+
 server.listen(PORT, '0.0.0.0', () => {
   const localIPs = getLocalIpAddresses();
   console.log('\n=============================================================');
-  console.log('🚀 TechFlow ERP Industrial Production Server is RUNNING');
+  console.log('🚀 Keystone ERP Industrial Production Server is RUNNING');
   console.log('=============================================================');
-  console.log(`\n  👉 Localhost:       http://localhost:${PORT}`);
-  console.log(`  👉 Localhost IP:    http://127.0.0.1:${PORT}`);
+  console.log(`\n  👉 Localhost Link:   http://localhost:${PORT}`);
+  console.log(`  👉 Localhost IP:     http://127.0.0.1:${PORT}`);
   if (localIPs.length > 0) {
-    console.log(`  👉 LAN / Server IP: http://${localIPs[0]}:${PORT}`);
+    localIPs.forEach(ip => {
+      console.log(`  👉 LAN / Network IP: http://${ip}:${PORT}`);
+    });
   }
+  console.log('\n  📶 OFFLINE & ONLINE ACCESS (Internet Required: NO):');
+  console.log('  • WITHOUT INTERNET: Open any LAN IP (e.g. http://192.168.x.x:3000) on any PC on the same Wi-Fi/LAN router.');
+  console.log('  • WITH INTERNET: Works exactly the same way without any changes.');
   console.log('\n  Features active:');
   console.log('  • 0 Demo Data (Clean production state for industrial deployment)');
   console.log('  • Real-time Excel CSV auto-save to: data/complaints_master_sheet.csv');
@@ -208,7 +225,7 @@ server.listen(PORT, '0.0.0.0', () => {
 });
 
 process.on('SIGINT', () => {
-  console.log('\nStopping TechFlow ERP Server...');
+  console.log('\nStopping Keystone ERP Server...');
   server.close(() => {
     process.exit(0);
   });
