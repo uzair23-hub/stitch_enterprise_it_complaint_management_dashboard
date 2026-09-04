@@ -18,9 +18,11 @@ echo.
 echo           KEYSTONE ENTERPRISES -- ENTERPRISE INDUSTRIAL COMPLAINT MANAGEMENT
 echo                       (v2.4 Enterprise Production Edition)
 echo ================================================================================
+echo  [+] GitHub Repository : https://github.com/uzair23-hub/stitch_enterprise_it_complaint_management_dashboard
 echo  [+] Operating Standard : Industry 4.0 Compliant / Air-Gapped Offline Ready
-echo  [+] Real-time Storage  : JSON DB + Auto Excel CSV Sync (data/complaints_master_sheet.csv)
-echo  [+] Local Server Target : http://localhost:3000
+echo  [+] Database Engine    : SQLite 3 DB + JSON DB + Excel Auto-Sync
+echo  [+] Storage Directory  : data/ (complaints.sqlite + complaints_master_sheet.csv)
+echo  [+] Local Server Target: http://localhost:3000
 echo ================================================================================
 echo.
 

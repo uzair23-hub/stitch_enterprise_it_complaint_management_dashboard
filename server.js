@@ -1,6 +1,6 @@
 /**
- * Keystone Enterprises — Production-Ready Zero-Dependency Industrial Server
- * Auto-syncs all entered data to disk in JSON and Excel (CSV) formats.
+ * Keystone Enterprises — Production-Ready Industrial Server
+ * Database Engine: SQLite 3 + JSON DB + Real-time Excel CSV Auto-Sync
  * Works online and 100% offline in air-gapped server environments.
  */
 
@@ -12,14 +12,54 @@ const os = require('os');
 const PORT = process.env.PORT || 3000;
 const BASE_DIR = __dirname;
 const DATA_DIR = path.join(BASE_DIR, 'data');
+const GITHUB_REPO = 'https://github.com/uzair23-hub/stitch_enterprise_it_complaint_management_dashboard';
 
-// Ensure data folder exists for Excel & database storage
+// Ensure data directory exists for Database & Excel storage
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
 const DB_FILE = path.join(DATA_DIR, 'complaints_database.json');
+const SQLITE_FILE = path.join(DATA_DIR, 'complaints.sqlite');
 const CSV_FILE = path.join(DATA_DIR, 'complaints_master_sheet.csv');
+
+// -------------------------------------------------------------
+// 1. SQLITE 3 DATABASE ENGINE INITIALIZATION
+// -------------------------------------------------------------
+let sqliteDb = null;
+let useSqlite = false;
+
+try {
+  const { DatabaseSync } = require('node:sqlite');
+  sqliteDb = new DatabaseSync(SQLITE_FILE);
+  sqliteDb.exec(`
+    CREATE TABLE IF NOT EXISTS complaints (
+      id TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS activity (
+      id TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+  useSqlite = true;
+  console.log('[DATABASE] SQLite 3 Engine ACTIVE at:', SQLITE_FILE);
+} catch (e) {
+  console.log('[DATABASE] SQLite module fallback to JSON Database file storage:', e.message);
+  useSqlite = false;
+}
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -56,8 +96,11 @@ function getLocalIpAddresses() {
   return ips;
 }
 
+// -------------------------------------------------------------
+// 2. EXCEL CSV REAL-TIME AUTO-SYNC ENGINE
+// -------------------------------------------------------------
 function syncToExcelCsv(complaints) {
-  let csv = '\uFEFF'; // UTF-8 BOM for Excel to open properly with international characters
+  let csv = '\uFEFF'; // UTF-8 BOM for Microsoft Excel compatibility
   csv += 'Complaint ID,Employee Name,Employee Code,Department,Category,Priority,Status,Description,Created Date,Created Time,Est Resolution,Resolved By,Resolved Date,Resolution Remarks\n';
   
   if (Array.isArray(complaints)) {
@@ -71,10 +114,101 @@ function syncToExcelCsv(complaints) {
   fs.writeFileSync(CSV_FILE, csv, 'utf8');
 }
 
+// Save complete payload to SQLite database tables
+function saveToSqlite(payload) {
+  if (!useSqlite || !sqliteDb) return;
+  const now = new Date().toISOString();
+
+  sqliteDb.exec('BEGIN TRANSACTION;');
+  try {
+    if (Array.isArray(payload.complaints)) {
+      sqliteDb.exec('DELETE FROM complaints;');
+      const stmt = sqliteDb.prepare('INSERT INTO complaints (id, data, updated_at) VALUES (?, ?, ?);');
+      payload.complaints.forEach(c => {
+        if (c.id) stmt.run(c.id, JSON.stringify(c), now);
+      });
+    }
+    if (Array.isArray(payload.users)) {
+      sqliteDb.exec('DELETE FROM users;');
+      const stmt = sqliteDb.prepare('INSERT INTO users (id, data, updated_at) VALUES (?, ?, ?);');
+      payload.users.forEach(u => {
+        if (u.id) stmt.run(u.id, JSON.stringify(u), now);
+      });
+    }
+    if (Array.isArray(payload.notifications)) {
+      sqliteDb.exec('DELETE FROM notifications;');
+      const stmt = sqliteDb.prepare('INSERT INTO notifications (id, data, updated_at) VALUES (?, ?, ?);');
+      payload.notifications.forEach(n => {
+        if (n.id) stmt.run(n.id, JSON.stringify(n), now);
+      });
+    }
+    if (Array.isArray(payload.activity)) {
+      sqliteDb.exec('DELETE FROM activity;');
+      const stmt = sqliteDb.prepare('INSERT INTO activity (id, data, updated_at) VALUES (?, ?, ?);');
+      payload.activity.forEach(a => {
+        if (a.id) stmt.run(a.id, JSON.stringify(a), now);
+      });
+    }
+    sqliteDb.exec('COMMIT;');
+  } catch (err) {
+    sqliteDb.exec('ROLLBACK;');
+    console.error('[DATABASE] SQLite Transaction Error:', err.message);
+  }
+}
+
+// Load data from SQLite database or fallback to JSON DB
+function loadDatabaseData() {
+  if (useSqlite && sqliteDb) {
+    try {
+      const complaintsRows = sqliteDb.prepare('SELECT data FROM complaints;').all();
+      const usersRows = sqliteDb.prepare('SELECT data FROM users;').all();
+      const notifRows = sqliteDb.prepare('SELECT data FROM notifications;').all();
+      const activityRows = sqliteDb.prepare('SELECT data FROM activity;').all();
+
+      const complaints = complaintsRows.map(r => JSON.parse(r.data));
+      const users = usersRows.map(r => JSON.parse(r.data));
+      const notifications = notifRows.map(r => JSON.parse(r.data));
+      const activity = activityRows.map(r => JSON.parse(r.data));
+
+      if (complaints.length > 0 || users.length > 0) {
+        return { complaints, users, notifications, activity, lastUpdated: new Date().toISOString(), source: 'SQLite 3' };
+      }
+    } catch (e) {
+      console.error('[DATABASE] Read from SQLite error, falling back to JSON:', e.message);
+    }
+  }
+
+  // Fallback to JSON database file
+  if (fs.existsSync(DB_FILE)) {
+    try {
+      const raw = fs.readFileSync(DB_FILE, 'utf8');
+      const data = JSON.parse(raw);
+      data.source = 'JSON DB';
+      // Seed SQLite if SQLite was empty
+      if (useSqlite && sqliteDb && (data.complaints?.length || data.users?.length)) {
+        saveToSqlite(data);
+      }
+      return data;
+    } catch (e) {
+      console.error('[DATABASE] Error reading JSON file:', e.message);
+    }
+  }
+
+  return { complaints: [], users: [], notifications: [], activity: [], lastUpdated: new Date().toISOString(), source: 'Clean DB' };
+}
+
+// Initial Sync check on server startup
+const initialData = loadDatabaseData();
+if (initialData.complaints) {
+  syncToExcelCsv(initialData.complaints);
+}
+
+// -------------------------------------------------------------
+// 3. HTTP SERVER & API ROUTES
+// -------------------------------------------------------------
 const server = http.createServer((req, res) => {
   let reqUrl = req.url.split('?')[0];
 
-  // Set CORS headers for local network access
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -85,36 +219,78 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // -------------------------------------------------------------
-  // API Endpoints for Backend Data Sync & Excel Persistence
-  // -------------------------------------------------------------
+  // GET /api/database-info -> Return Live Database & Storage Details
+  if (reqUrl === '/api/database-info' && req.method === 'GET') {
+    const data = loadDatabaseData();
+    let sqliteSize = 0;
+    let jsonSize = 0;
+    let csvSize = 0;
 
-  // GET /api/data -> Load server database
-  if (reqUrl === '/api/data' && req.method === 'GET') {
-    if (fs.existsSync(DB_FILE)) {
-      const raw = fs.readFileSync(DB_FILE, 'utf8');
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
-      res.end(raw);
-    } else {
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
-      res.end(JSON.stringify({ complaints: [], notifications: [], activity: [] }));
-    }
+    if (fs.existsSync(SQLITE_FILE)) sqliteSize = fs.statSync(SQLITE_FILE).size;
+    if (fs.existsSync(DB_FILE)) jsonSize = fs.statSync(DB_FILE).size;
+    if (fs.existsSync(CSV_FILE)) csvSize = fs.statSync(CSV_FILE).size;
+
+    const info = {
+      engine: useSqlite ? 'SQLite 3 + JSON + Excel CSV' : 'JSON Persistent Engine + Excel CSV',
+      useSqlite,
+      githubRepo: GITHUB_REPO,
+      storageDirectory: DATA_DIR,
+      files: {
+        sqlite: { path: SQLITE_FILE, sizeBytes: sqliteSize, exists: fs.existsSync(SQLITE_FILE) },
+        json: { path: DB_FILE, sizeBytes: jsonSize, exists: fs.existsSync(DB_FILE) },
+        csv: { path: CSV_FILE, sizeBytes: csvSize, exists: fs.existsSync(CSV_FILE) }
+      },
+      counts: {
+        complaints: data.complaints ? data.complaints.length : 0,
+        users: data.users ? data.users.length : 0,
+        notifications: data.notifications ? data.notifications.length : 0,
+        activity: data.activity ? data.activity.length : 0
+      },
+      lastUpdated: data.lastUpdated || new Date().toISOString()
+    };
+
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+    res.end(JSON.stringify(info));
     return;
   }
 
-  // POST /api/save -> Save data into JSON database and Excel CSV master file
+  // GET /api/data -> Load server database
+  if (reqUrl === '/api/data' && req.method === 'GET') {
+    const data = loadDatabaseData();
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+    res.end(JSON.stringify(data));
+    return;
+  }
+
+  // POST /api/save -> Save data into SQLite, JSON DB, and Excel CSV
   if (reqUrl === '/api/save' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
       try {
         const payload = JSON.parse(body);
+        payload.lastUpdated = new Date().toISOString();
+
+        // 1. Write to JSON DB File
         fs.writeFileSync(DB_FILE, JSON.stringify(payload, null, 2), 'utf8');
+
+        // 2. Write to SQLite DB Engine
+        if (useSqlite) {
+          saveToSqlite(payload);
+        }
+
+        // 3. Write to Excel CSV Master Sheet
         if (payload.complaints) {
           syncToExcelCsv(payload.complaints);
         }
+
         res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
-        res.end(JSON.stringify({ success: true, message: 'Saved to database and Excel CSV successfully', count: payload.complaints ? payload.complaints.length : 0 }));
+        res.end(JSON.stringify({
+          success: true,
+          message: 'Saved to SQLite 3, JSON DB, and Excel CSV successfully',
+          engine: useSqlite ? 'SQLite 3 + JSON + Excel' : 'JSON + Excel',
+          count: payload.complaints ? payload.complaints.length : 0
+        }));
       } catch (err) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=UTF-8' });
         res.end(JSON.stringify({ success: false, error: err.message }));
@@ -203,29 +379,31 @@ server.on('error', (err) => {
 server.listen(PORT, '0.0.0.0', () => {
   const localIPs = getLocalIpAddresses();
   console.log('\n=============================================================');
-  console.log('🚀 Keystone ERP Industrial Production Server is RUNNING');
+  console.log('🚀 KEYSTONE ERP INDUSTRIAL DATABASE SERVER IS RUNNING');
   console.log('=============================================================');
-  console.log(`\n  👉 Localhost Link:   http://localhost:${PORT}`);
-  console.log(`  👉 Localhost IP:     http://127.0.0.1:${PORT}`);
+  console.log(`  👉 GitHub Repository: ${GITHUB_REPO}`);
+  console.log(`  👉 Localhost Link:    http://localhost:${PORT}`);
+  console.log(`  👉 Localhost IP:      http://127.0.0.1:${PORT}`);
   if (localIPs.length > 0) {
     localIPs.forEach(ip => {
-      console.log(`  👉 LAN / Network IP: http://${ip}:${PORT}`);
+      console.log(`  👉 LAN / Network IP:  http://${ip}:${PORT}`);
     });
   }
-  console.log('\n  📶 OFFLINE & ONLINE ACCESS (Internet Required: NO):');
-  console.log('  • WITHOUT INTERNET: Open any LAN IP (e.g. http://192.168.x.x:3000) on any PC on the same Wi-Fi/LAN router.');
-  console.log('  • WITH INTERNET: Works exactly the same way without any changes.');
-  console.log('\n  Features active:');
-  console.log('  • 0 Demo Data (Clean production state for industrial deployment)');
-  console.log('  • Real-time Excel CSV auto-save to: data/complaints_master_sheet.csv');
-  console.log('  • JSON database storage at:        data/complaints_database.json');
-  console.log('  • Works 100% offline in air-gapped manufacturing plants');
-  console.log('  • Press Ctrl+C in terminal to stop server.\n');
+  console.log('\n  🗄️ PERSISTENT DATABASE ENGINE ACTIVE:');
+  console.log(`  • Engine Type        : ${useSqlite ? 'SQLite 3 Database + JSON + Real-time Excel CSV' : 'JSON Persistent Engine + Excel CSV'}`);
+  console.log(`  • Storage Directory  : ${DATA_DIR}`);
+  console.log(`  • SQLite Database DB : data/complaints.sqlite`);
+  console.log(`  • JSON Master File   : data/complaints_database.json`);
+  console.log(`  • Excel Live Auto-Sync: data/complaints_master_sheet.csv`);
+  console.log('\n  📶 OFFLINE & LAN ACCESS:');
+  console.log('  • Works 100% offline in air-gapped server environments.');
+  console.log('  • Data persists permanently on disk across reboots and client sessions.');
+  console.log('  • Press Ctrl+C in terminal to stop server safely.\n');
   console.log('=============================================================\n');
 });
 
 process.on('SIGINT', () => {
-  console.log('\nStopping Keystone ERP Server...');
+  console.log('\nStopping Keystone ERP Database Server...');
   server.close(() => {
     process.exit(0);
   });

@@ -13,10 +13,10 @@ echo  ==========================================================================
 echo ================================================================================
 echo  [+] Security Model    : Username + Password Authentication
 echo  [+] Brute-Force Guard : 5 Attempts Max  /  15-Minute Account Lockout
-echo  [+] Audit Logging     : LOGIN / LOGOUT events stored in localStorage
-echo  [+] Input Validation  : Alphanumeric sanitisation enforced
+echo  [+] Database Engine   : SQLite 3 + JSON DB + Excel Auto-Sync
+echo  [+] Storage Path      : data/complaints.sqlite + data/complaints_master_sheet.csv
+echo  [+] GitHub Repository : https://github.com/uzair23-hub/stitch_enterprise_it_complaint_management_dashboard
 echo  [+] Operating Standard: Industry 4.0 Compliant / Air-Gapped Offline Ready
-echo  [+] Real-time Storage : JSON DB + Auto Excel CSV Sync
 echo  [+] Local Server      : http://localhost:3000
 echo ================================================================================
 echo.
