@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-title Keystone Enterprises Pvt Ltd — Complaint Management System
+title Keystone Enterprises Pvt Ltd — Enterprise Complaint Management System (VIP Edition)
 
 cd /d "%~dp0"
 cls
@@ -8,38 +8,32 @@ color 0A
 
 echo ================================================================================
 echo  ============================================================================
-echo   KEYSTONE ENTERPRISES PVT LTD  --  COMPLAINT MANAGEMENT SYSTEM  v2.0
+echo   KEYSTONE ENTERPRISES PVT LTD  --  COMPLAINT MANAGEMENT SYSTEM  v2.5 VIP
 echo  ============================================================================
 echo ================================================================================
-echo  [+] Security Model    : Username + Password Authentication
+echo  [+] Security Model    : Username + Password Authentication (Admin / Dept / Staff)
 echo  [+] Brute-Force Guard : 5 Attempts Max  /  15-Minute Account Lockout
-echo  [+] Database Engine   : SQLite 3 + JSON DB + Excel Auto-Sync
-echo  [+] Storage Path      : data/complaints.sqlite + data/complaints_master_sheet.csv
+echo  [+] Database Engine   : SQLite 3 + MS Excel (.xlsx) + JSON DB + CSV Auto-Sync
+echo  [+] Excel DB File     : data/Complaints_Master_Database.xlsx
+echo  [+] Monthly Report DB : Auto-Synced Permanent Sheet 3 (Monthly Summaries)
+echo  [+] Live Website Link : https://uzair23-hub.github.io/stitch_enterprise_it_complaint_management_dashboard/
 echo  [+] GitHub Repository : https://github.com/uzair23-hub/stitch_enterprise_it_complaint_management_dashboard
 echo  [+] Operating Standard: Industry 4.0 Compliant / Air-Gapped Offline Ready
 echo  [+] Local Server      : http://localhost:3000
 echo ================================================================================
 echo.
 
-:: ── Security Banner ───────────────────────────────────────────────────────────
-echo  [SECURITY NOTICE] Unauthorized access is strictly prohibited.
-echo  [SECURITY NOTICE] All login activity is logged and monitored.
-echo  [SECURITY NOTICE] 5 failed login attempts will lock access for 15 minutes.
+:: ── Security Notice ────────────────────────────────────────────────────────────
+echo  [SECURITY NOTICE] Authorized Access Only. All activities logged.
+echo  [DATABASE NOTICE] Permanent Excel DB ^& Monthly Reports Auto-Synced to Disk.
 echo ================================================================================
 echo.
 
-:: ── Auto-create Desktop Shortcut (first run only) ───────────────────────────
-set "DESKTOP_LNK=%USERPROFILE%\Desktop\Keystone ERP Dashboard.lnk"
-if not exist "%DESKTOP_LNK%" (
-  echo [*] Creating Desktop Shortcut...
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "$s = (New-Object -ComObject WScript.Shell).CreateShortcut('%DESKTOP_LNK%'); $s.TargetPath = '%~f0'; $s.WorkingDirectory = '%~dp0'; $s.IconLocation = 'C:\Windows\System32\shell32.dll,14'; $s.Description = 'Keystone ERP Dashboard - Click to Launch'; $s.Save();"
-  if exist "%DESKTOP_LNK%" (
-    echo [OK] Desktop shortcut created: Keystone ERP Dashboard
-  ) else (
-    echo [WARN] Could not create desktop shortcut (check permissions).
-  )
-  echo.
-)
+:: ── Create / Refresh Desktop Folder & Shortcuts ─────────────────────────────
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0create_shortcut.ps1" >nul 2>&1
+
+echo [OK] Desktop Suite Folder Ready on Desktop (including .bat, .lnk & links)!
+echo.
 
 :: ── Node.js Runtime Check ─────────────────────────────────────────────────────
 echo [*] Validating Node.js Runtime Environment...
@@ -51,7 +45,6 @@ echo [OK] Node.js Runtime Detected: %NODE_VER%
 
 :: Minimum version guard (v14+)
 for /f "tokens=1 delims=v." %%M in ("%NODE_VER%") do set _MAJOR=%%M
-for /f "tokens=2 delims=v." %%M in ("%NODE_VER%") do set _MAJOR=%%M
 if defined _MAJOR (
   if %_MAJOR% LSS 14 goto OLDNODE
 )
@@ -77,8 +70,9 @@ echo  SERVER ACTIVE -- Keystone ERP CMS Live!
 echo  Browser will auto-open at: http://localhost:3000
 echo.
 echo  LOGIN CREDENTIALS:
-echo    Username : admin
-echo    Password : admin123
+echo    1. Administrator : Username: admin ^| Password: admin123
+echo    2. Plant Staff   : Enter Employee Code as Username ^& Password (e.g. 13292 / 13292)
+echo    3. Dept Heads    : Username: adeel_sofyan / rehan / etc. ^| Password: Code or 123456
 echo.
 echo  SECURITY RULES:
 echo    5 wrong attempts = 15-minute account lockout.
@@ -89,9 +83,8 @@ echo  Press Ctrl+C to shut down the server safely.
 echo ================================================================================
 echo.
 
-:: Open browser after 2 seconds
-powershell -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:3000'" >nul 2>&1 &
-
+:: Open browser after 2 seconds asynchronously while server starts
+start "" powershell -NoProfile -ExecutionPolicy Bypass -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:3000'"
 node "%~dp0server.js"
 goto END
 

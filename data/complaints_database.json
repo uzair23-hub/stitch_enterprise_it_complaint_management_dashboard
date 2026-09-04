@@ -1,6 +1,46 @@
 {
   "complaints": [
     {
+      "id": "CMP-0004",
+      "employeeId": "U001",
+      "employeeName": "System Administrator",
+      "employeeCode": "12672",
+      "department": "Mechanical",
+      "category": "Software Access",
+      "priority": "Low",
+      "status": "Active",
+      "description": "erp",
+      "attachment": null,
+      "createdDate": "2026-09-04",
+      "createdTime": "03:53",
+      "estimatedResolution": "1-2 Days",
+      "resolvedBy": null,
+      "resolvedDate": null,
+      "resolvedTime": null,
+      "resolutionRemarks": null,
+      "locked": false
+    },
+    {
+      "id": "CMP-0003",
+      "employeeId": "U001",
+      "employeeName": "System Administrator",
+      "employeeCode": "12672",
+      "department": "Electrical",
+      "category": "Network Issue",
+      "priority": "Low",
+      "status": "Active",
+      "description": "network problem",
+      "attachment": null,
+      "createdDate": "2026-09-04",
+      "createdTime": "03:52",
+      "estimatedResolution": "1-2 Days",
+      "resolvedBy": null,
+      "resolvedDate": null,
+      "resolvedTime": null,
+      "resolutionRemarks": null,
+      "locked": false
+    },
+    {
       "id": "CMP-0001",
       "employeeId": "U006",
       "employeeName": "AREESHA",
@@ -345,16 +385,68 @@
   ],
   "notifications": [
     {
+      "id": "N005",
+      "userId": "U005",
+      "message": "🚨 New Low ticket CMP-0004 assigned to Mechanical: Software Access",
+      "type": "assigned",
+      "read": true,
+      "timestamp": "2026-09-04T10:53:11.605Z",
+      "complaintId": "CMP-0004"
+    },
+    {
+      "id": "N004",
+      "userId": "U001",
+      "message": "Complaint CMP-0004 registered successfully in Mechanical Queue.",
+      "type": "submitted",
+      "read": true,
+      "timestamp": "2026-09-04T10:53:11.604Z",
+      "complaintId": "CMP-0004"
+    },
+    {
+      "id": "N003",
+      "userId": "U004",
+      "message": "🚨 New Low ticket CMP-0003 assigned to Electrical: Network Issue",
+      "type": "assigned",
+      "read": true,
+      "timestamp": "2026-09-04T10:52:15.618Z",
+      "complaintId": "CMP-0003"
+    },
+    {
+      "id": "N002",
+      "userId": "U001",
+      "message": "Complaint CMP-0003 registered successfully in Electrical Queue.",
+      "type": "submitted",
+      "read": true,
+      "timestamp": "2026-09-04T10:52:15.614Z",
+      "complaintId": "CMP-0003"
+    },
+    {
       "id": "N001",
       "userId": "U006",
       "message": "✅ Ticket CMP-0001 has been resolved by System Administrator: resolve problem...",
       "type": "resolved",
-      "read": false,
+      "read": true,
       "timestamp": "2026-09-03T13:22:38.119Z",
       "complaintId": "CMP-0001"
     }
   ],
   "activity": [
+    {
+      "id": "A005",
+      "action": "Complaint Submitted",
+      "userId": "U001",
+      "complaintId": "CMP-0004",
+      "timestamp": "2026-09-04T10:53:11.606Z",
+      "details": "Mechanical — Software Access (Low)"
+    },
+    {
+      "id": "A004",
+      "action": "Complaint Submitted",
+      "userId": "U001",
+      "complaintId": "CMP-0003",
+      "timestamp": "2026-09-04T10:52:15.619Z",
+      "details": "Electrical — Network Issue (Low)"
+    },
     {
       "id": "A003",
       "action": "Complaint Resolved",
@@ -380,5 +472,5 @@
       "details": "Database seeded with Book1.xlsx employee roster & system rights"
     }
   ],
-  "lastUpdated": "2026-09-03T13:22:38.168Z"
+  "lastUpdated": "2026-09-04T10:56:18.019Z"
 }
